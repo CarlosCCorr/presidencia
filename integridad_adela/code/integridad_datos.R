@@ -37,6 +37,46 @@ ident.date <- function(df, thresh = .7){
     ## variable booleana que identifica a las columnas que sobrepasan thresh.
     apply(df, 2,function(t) t <- prob.date(t)) > thresh
 }
+##---------------------------------
+## correct.date
+##---------------------------------
+format.date <- function(col){
+    ## Explora col  y determina si las fechas
+    ## se encuentran en algún formato conocido.
+    ## IN
+    ## col: columna con fechas
+    ## OUT
+    ## cadena que indica si las fechas tienen un formato conocido o no.
+    result <- ""
+    suppressWarnings(formats <- list(
+        ymd = sum(is.na(ymd(col))),
+        mdy = sum(is.na(mdy(col))),
+        dym = sum(is.na(dym(col))),
+        dmy = sum(is.na(dmy(col))),
+        myd = sum(is.na(myd(col))),
+        ydm = sum(is.na(ydm(col)))
+        ))
+    values     <- laply(formats, function(t)t<- t[[1]])
+    min.values <- min(values)
+    format     <- names(formats)[which(values == min.values)]
+    result     <- paste0("El formato más factible es: ", format,
+                         ". Hay: ", min.values, " inconsistencias")
+    result[1]
+}
+##---------------------------------
+## check.date
+##---------------------------------
+check.date <- function(df, thresh = .7){
+    dates   <- df[, ident.date(df,thresh)]
+    cols    <- names(dates)
+    formats <- apply(dates,2, format.date)
+    results <- paste0(rep('Columna de fecha: ', length(cols)),
+                      cols,
+                      rep('. Resultado: ', length(cols)),
+                      formats
+                      )
+    results
+}
 ####################################
 ###########COORDENADAS##############
 ####################################
@@ -92,3 +132,14 @@ correct.coord <- function(df){
         print('latitud fuera del territorio')
     }
 }
+########################################################
+########################################################
+## Pruebas #############################################
+########################################################
+########################################################
+test <- data.frame(fecha      = c("20011012","2012-03-15", "2015-07-01"),
+                   casi_fecha = c("20011512","12-23-23", "13-15-17"),
+                   no_fecha   = c("hola", "una", "prueba"),
+                   ruido      = c(14234, 123423515, 12341234))
+
+check.date(test)
