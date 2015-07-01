@@ -108,7 +108,7 @@ ident.coord <- function(df, thresh = .7){
     ## OUT
     ## data.frame con las columnas que respresentan las coordenadas.
     res <- data.frame(matrix(NA,ncol = 2, nrow = nrow(df)))
-    coords      <- df[,apply(df, 2,function(t) t <- prob.coord(t)) > thresh]
+    coords  <- df[,apply(df, 2,function(t) t <- prob.coord(t) > thresh)]
     res[,1] <- coords[, which(coords[1,]<0) ]
     res[,2] <- coords[, which(coords[1,]>0) ]
     names(res) <- c("long","lat")
@@ -132,14 +132,49 @@ correct.coord <- function(df){
         print('latitud fuera del territorio')
     }
 }
+####################################
+######Entidades Federativas#########
+####################################
+##---------------------------------
+## prob.entity
+##---------------------------------
+prob.entity <- function(col){
+    ## Recorre e inspecciona todas las entradas de col
+    ## y determina si estas cumplen con un patrón estandar de fecha
+    ## IN
+    ## col: la columna que se quiere inspeccionar
+    ## OUT
+    ## el porcentaje de entradas que cumplen con el patrón
+    pattern <-
+        '(([A-Z]{1}[[:alpha:]]{2,}|[A-Z])([[:punct:]]|[[:space:]])?){1,3}'
+    true_match <-
+        na.omit(str_length(str_match(col,pattern)[,1]) ==
+                    str_length(col))
+    sum(true_match)/length(col)    
+}
+##---------------------------------
+## ident.entity
+##---------------------------------
+ident.entity <- function(df, thresh = .7){
+    ## Aplica prob.date a todas las columnas de ident.date y determina si la
+    ## proporción de entradas que cumplen con el patrón es mayor que thresh
+    ## IN
+    ## df: data.frame de la que se quieren verificar las columnas
+    ## OUT
+    ## variable booleana que identifica a las columnas que sobrepasan thresh.
+    apply(df, 2,function(t) t <- prob.entity(t)) > thresh
+}
 ########################################################
 ########################################################
 ## Pruebas #############################################
 ########################################################
 ########################################################
+##### Prueba fecha
 test <- data.frame(fecha      = c("20011012","2012-03-15", "2015-07-01"),
                    casi_fecha = c("20011512","12-23-23", "13-15-17"),
                    no_fecha   = c("hola", "una", "prueba"),
                    ruido      = c(14234, 123423515, 12341234))
 
 check.date(test)
+##### Prueba entidad federativa
+
