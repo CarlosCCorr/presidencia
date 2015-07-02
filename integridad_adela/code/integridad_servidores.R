@@ -76,10 +76,10 @@ link.checker <- function(url){
     test   <-
         ldply(url,
               function( t ){ u  <-
-                  http_status( GET( t ) ); print( u$message )
+                  http_status( GET( t ) ) 
                              if(u$category != 'success'){
                                  index  <- which(url == t)
-                                 browseURL(t)
+                                ## browseURL(t)
                                  command1 <- paste0('import -window 0x03a00001 ./images/', index,'.jpeg')
                                  system(command1)
                                  ##                                 command2 <- paste0('okular ./images/', t, '.jpeg')
@@ -370,23 +370,66 @@ workflow <- function(){
     print(resultados)
 }
 ##------------------------------
-## check.type
+## get.termin
 ##------------------------------
-check.type <- function(MAT){
-    url  <- MAT$URL
-    type <- str_replace(str_match(str_sub(url,
-                                          str_length(url) - 5,
-                                          -1),
-                                  "\\.{1}[a-z]*"),".","")
+get.termin <- function(url){
+    type    <- str_replace(str_match(str_sub(url,
+                                             str_length(url) - 5,
+                                             -1),
+                                     "\\.{1}[a-z]*"),".","")
     type
+}
+##------------------------------
+## check.all
+##------------------------------
+check.all <- function(MAT){
+    results <- list()
+    works   <- link.checker(MAT$URL)$estado
+    for(i in 1:nrow(MAT)){
+        result  <- list(
+            inst       = "",
+            url        = "",
+            disp       = "", ## si el servidor está funcionando
+            tipo.pred  = "", ## tipo de terminación del archivo
+            tipo.rel   = "", ## tipo de terminación del archivo
+            comprimido = "", ## booleano si el archivo está comprimido
+            n.archivos = "", ## numero de archivos
+            arch.comp  = "",
+            tipo.comp  = "") ## tipo de archivos que estan en el zip
+        ## Llenar result
+        result$inst          <- MAT$Institucion[i]
+        result$url           <- MAT$URL[i]
+        result$disp          <- works[i]
+        result$tipo.pred     <- get.termin(result$url)[1]
+        result$tipo.rel      <- MAT$Tipo[i]
+        result$comprimido    <- result$tipo.pred %in% c("rar","zip")
+        if(result$disp == 'success'){
+            result$n.archivos <- as.numeric(!result$comprimido)
+        }
+        if(result$comprimido == TRUE & result$disp == 'success'){
+            system(paste0('wget -O tmp.tmp ',result$url ))
+            if(result$tip.pred == "zip"){
+                system('zipinfo -1 tmp.tmp > files.txt')
+            }else{
+                system('unrar -Z -l tmp.tmp > files.txt')
+            }
+            archivos.comp        <- readLines('files.txt')
+            result$arch.comp     <- archivos.comp
+            result$n.archivos    <- length(archivos.comp)
+            result$tipo.comp     <- get.termin(archivos.comp)
+            system('rm  tmp.tmp files.txt')
+        }
+        results[[i]] <- result
+    }
+    results
 }
 #############################################################################
 ################################### PRUEBA ##################################
 #############################################################################
 #### Prueba de workflow
-workflow()
-#### Prueba de link checker
-data <- read.csv("../data/MAT.csv", stringsAsFactors = FALSE)
-data.sedesol <- filter(data, Institucion == 'sedesol' &
-                           Version == 1)
-test.sedesol <- link.checker(data.sedesol$URL[1:5])
+##    workflow()
+#### Prueba de check all
+set.seed(113454321)
+mat.1.samp <- mat.1[sample(20),]
+test <- check.all(mat.1.samp)
+#url  <- "http://siged.sep.gob.mx/SIGED/content/conn/WCPortalUCM/path/Contribution%20Folders/PortalSIGED/Descargas/Datos%20Abiertos/Censo/Alumnos/ALUMNOS_CT_CENSADOS.zip?download"
