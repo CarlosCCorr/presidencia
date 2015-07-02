@@ -177,4 +177,3 @@ test <- data.frame(fecha      = c("20011012","2012-03-15", "2015-07-01"),
 
 check.date(test)
 ##### Prueba entidad federativa
-
