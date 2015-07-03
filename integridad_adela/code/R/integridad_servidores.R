@@ -9,6 +9,7 @@ suppressPackageStartupMessages(library(rjson))
 suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(httr))
 suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(RGoogleAnalytics))
 ##---------------------------------------------------------------------------
 ##---------------------------------------------------------------------------
 ##---------------------------------------------------------------------------
@@ -79,7 +80,7 @@ link.checker <- function(url){
                   http_status( GET( t ) ) 
                              if(u$category != 'success'){
                                  index  <- which(url == t)
-                                ## browseURL(t)
+                                 ## browseURL(t)
                                  command1 <- paste0('import -window 0x03a00001 ./images/', index,'.jpeg')
                                  system(command1)
                                  ##                                 command2 <- paste0('okular ./images/', t, '.jpeg')
@@ -248,7 +249,8 @@ create.new.MAT<- function(M){
         ##cont es el contador para saber la version del catalogo qa la que corresponde
         cont <- matrix(0,length(inst),1)
         indice_csv<-c()
-        ##Guarda todas las i que si se pudo leer su csv (por ejemplo los de la SEP no se pueden)
+        ##Guarda todas las i que si se pudo leer su csv
+        ##(por ejemplo los de la SEP no se pueden)
         for(i in 1:dim(M)[1]){
             ##for(i in 1:2){
             cont[which(inst==M[i,2])]<-cont[which(inst==M[i,2])]+1
@@ -443,13 +445,35 @@ check.all <- function(MAT){
     }
     results
 }
+##------------------------------
+## mat.analytics
+##------------------------------
+mat.analytics <- function(MAT, A){
+    MAT$descargas <- ldply(MAT$URL,function(t){
+                               if(t %in% A$eventLabel){
+                                   t <- sum(A$totalEvents[t == A$eventLabel])
+                               }else{
+                                   t <- 0
+                               }
+                               t
+                           })[,1]
+    no.match <- A[! A$eventLabel %in% MAT$URL, ]
+    write.csv(no.match,
+              "./data/no_match.csv",
+              row.names = FALSE)
+    MAT
+}
 #############################################################################
 ################################### PRUEBA ##################################
 #############################################################################
-#### Prueba de workflow
-##    workflow()
-#### Prueba de check all
-set.seed(113454321)
-mat.1.samp <- mat.1[sample(20),]
-test <- check.all(mat.1.samp)
-#url  <- "http://siged.sep.gob.mx/SIGED/content/conn/WCPortalUCM/path/Contribution%20Folders/PortalSIGED/Descargas/Datos%20Abiertos/Censo/Alumnos/ALUMNOS_CT_CENSADOS.zip?download"
+## Lectura de datos  y  modificación de formato
+MAT   <- read.csv("./data/MAT.csv",
+                  stringsAsFactors = FALSE,
+                  encoding = "UTF-8")
+mat.1 <- filter(MAT, Version == 1)
+A     <- read.csv("./data/A.csv",
+                  stringsAsFactors = FALSE,
+                  encoding = "UTF-8")
+A$eventLabel <- ldply(A$eventLabel, URLdecode)[,1]
+## Hacer matching
+a.mat <- filter(A, A$eventLabel %in% mat.1$URL)
