@@ -373,6 +373,14 @@ workflow <- function(){
 ## get.termin
 ##------------------------------
 get.termin <- function(url){
+    ## Determina la terminación del archivo dentro de la url
+    ## especificada.
+    ## IN
+    ## url del archivo
+    ## OUT
+    ## terminación del archivo.
+    ##------------------------------------------------------------
+    ## Obtenemos la version pasada de MAT.
     type    <- str_replace(str_match(str_sub(url,
                                              str_length(url) - 5,
                                              -1),
@@ -383,6 +391,18 @@ get.termin <- function(url){
 ## check.all
 ##------------------------------
 check.all <- function(MAT){
+    ## Determina si las ligas de mat funcionan,
+    ## si los archivos están comprimidos o no,
+    ## el tipo de archivo, el peso y aquí es donde
+    ## se hará revisión de calidad de fechas, coordenadas,
+    ## entidades federativas, etc.
+    ## IN
+    ## La matriz MAT
+    ## OUT
+    ## una lista con todas las características previamente
+    ## especificadas.
+    ##------------------------------------------------------------
+    ## Obtenemos la version pasada de MAT.
     results <- list()
     works   <- link.checker(MAT$URL)$estado
     for(i in 1:nrow(MAT)){
