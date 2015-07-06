@@ -178,25 +178,102 @@ prob.entity <- function(col){
 ##---------------------------------
 ## ident.entity
 ##---------------------------------
-ident.entity <- function(df, thresh = .7){
-    ## Aplica prob.date a todas las columnas de ident.date y determina si la
-    ## proporción de entradas que cumplen con el patrón es mayor que thresh
+transform.entity <- function(entity){
+    ## Recibe una entidad federativa y las transforma en su clave INEGI
     ## IN
     ## df: data.frame de la que se quieren verificar las columnas
     ## OUT
     ## variable booleana que identifica a las columnas que sobrepasan thresh.
-    apply(df, 2,function(t) t <- prob.entity(t)) > thresh
+    entity <- str_replace(entity,"[[:punct:]]","")
+    entity <- tolower(entity)
+    entity <- str_trim(entity)
+    if(str_detect(entity,"^a")){
+        entity <- "01"
+    }else if(str_detect(entity,"^b")){
+        if(str_detect(entity,"s$")){
+            entity <- "03"
+        }else{
+            entity <- "02"
+        }
+    }else if(str_detect(entity,"^c")){
+        if(str_detect(entity,"m")){
+            entity <- "04"
+        }else if(str_detect(entity,"s")){
+            entity <- "05"
+        }else if(str_detect(entity,"h")){
+            entity <- "06"
+        }else if(str_detect(entity,"(co|cl)")){
+            entity <- "07"
+        }else if(str_detect(entity,"o")){
+            entity <- "08"
+        }
+    }else if(str_detect(entity,"^d")){
+        if(str_detect(entity,"f")){
+            entity <- "09"
+        }else{
+            entity <- "10"
+        }
+    }else if(str_detect(entity,"^e")){
+        entity <- "11"
+    }else if(str_detect(entity,"^g")){
+        if(str_detect(entity,"(t|a)")){
+            entity <- "12"
+        }else{
+            entity <- "13"
+        }
+    }else if(str_detect(entity,"^h")){
+        entity <- "14"
+    }else if(str_detect(entity,"^j")){
+        entity <- "15"
+    }else if(str_detect(entity,"^m")){
+        if(str_detect(entity,"(n|i)")){
+            entity <- "16"
+        }else{
+            entity <- "17"
+        }
+    }else if(str_detect(entity,"^n")){
+        if(str_detect(entity,"l")){
+            entity <- "19"
+        }else{
+            entity <- "18"
+        }
+    }else if(str_detect(entity,"^o")){
+        entity <- "20"
+    }else if(str_detect(entity,"^p")){
+        entity <- "21"
+    }else if(str_detect(entity,"^q")){
+        if(str_detect(entity,"t")){
+            entity <- "22"
+        }else{
+            entity <- "23"
+        }
+    }else if(str_detect(entity,"^s")){
+        if(str_detect(entity,"p")){
+            entity <- "24"
+        }else if(str_detect(entity,"(i|l)")){
+            entity <- "25"
+        }else{
+            entity <- "26"
+        }
+    }else if(str_detect(entity,"^t")){
+        if(str_detect(entity,"(c|b)")){
+            entity <- "27"
+        }else if(str_detect(entity,"(s|m)")){
+            entity <- "28"
+        }else{
+            entity <- "29"
+        }
+    }else if(str_detect(entity,"^v")){
+        entity <- "30"
+    }else if(str_detect(entity,"^y")){
+        entity <- "31"
+    }else if(str_detect(entity,"^z")){
+        entity <- "32"
+    }
+    entity
 }
 ########################################################
 ########################################################
 ## Pruebas #############################################
 ########################################################
 ########################################################
-##### Prueba fecha
-test <- data.frame(fecha      = c("20011012","2012-03-15", "2015-07-01"),
-                   casi_fecha = c("20011512","12-23-23", "13-15-17"),
-                   no_fecha   = c("hola", "una", "prueba"),
-                   ruido      = c(14234, 123423515, 12341234))
-
-check.date(test)
-##### Prueba entidad federativa
