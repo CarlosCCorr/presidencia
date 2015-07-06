@@ -1,41 +1,34 @@
-"inst","url","url_cat","fecha","conjuntos","recursos"
-"sedesol","http://adela.datos.gob.mx//instituciones/sedesol","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/335/Inventario_v2.0_SEDESOL.csv",2015-05-22 00:20:00,"87","358"
-"pemex","http://adela.datos.gob.mx//instituciones/pemex","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/370/pemex_bueno_03dic2014.csv",2015-06-23 16:34:00,"64","121"
-"sagarpa","http://adela.datos.gob.mx//instituciones/sagarpa","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/311/Inventario_csv14abr15__UTF8_.csv",2015-04-14 17:17:00,"30","92"
-"estado-de-puebla","http://adela.datos.gob.mx//instituciones/estado-de-puebla","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/259/BlocDeNotasSinErrores.csv",2015-01-26 16:41:00,"12","12"
-"ayuntamiento-de-xalapa","http://adela.datos.gob.mx//instituciones/ayuntamiento-de-xalapa","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/355/InventarioDatosXalapa18052015.csv",2015-06-11 18:08:00,"10","29"
-"sener","http://adela.datos.gob.mx//instituciones/sener","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/232/INVENTARIO_DATOS_SENER_11122014_FINAL_V1_CSV_UTF8.csv",2014-12-29 17:06:00,"7","87"
-"sct","http://adela.datos.gob.mx//instituciones/sct","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/371/InventarioSCT_20141129.csv",2015-06-23 17:25:00,"6","42"
-"ran","http://adela.datos.gob.mx//instituciones/ran","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/305/RAN_Inventario_201503.csv",2015-03-31 16:03:00,"6","192"
-"cdi","http://adela.datos.gob.mx//instituciones/cdi","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/292/catalogo_v2.0_CDI.csv",2015-03-03 00:52:00,"5","5"
-"imss","http://adela.datos.gob.mx//instituciones/imss","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/368/IMSS_-_Sheet1__13_.csv",2015-06-19 00:01:00,"5","159"
-"ayuntamiento-de-san-luis-potosi","http://adela.datos.gob.mx//instituciones/ayuntamiento-de-san-luis-potosi","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/218/Inventario_-_Ayuntamiento_de_SLP.csv",2014-12-10 20:33:00,"2","4"
-"sep","http://adela.datos.gob.mx//instituciones/sep","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/302/Cat_logo_v2.0_-_final.csv",2015-03-26 23:26:00,"6","54"
-"servicio-geologico-mexicano","http://adela.datos.gob.mx//instituciones/servicio-geologico-mexicano","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/318/SGM_3.csv",2015-04-17 17:26:00,"2","13"
-"fonacot","http://adela.datos.gob.mx//instituciones/fonacot","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/345/plantilla_de_inventario_fonacot_290515.csv",2015-05-29 23:43:00,"2","2"
-"ayuntamiento-de-san-pedro-garza-garcia","http://adela.datos.gob.mx//instituciones/ayuntamiento-de-san-pedro-garza-garcia","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/231/Cat_logo_San_Pedro-utf8.csv",2014-12-23 23:42:00,"2","14"
-"nafin","http://adela.datos.gob.mx//instituciones/nafin","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/349/Inventario_v2.0_-_NAFIN.csv",2015-06-09 18:55:00,"1","6"
-"iepsa","http://adela.datos.gob.mx//instituciones/iepsa","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/380/Cat_logo-Inventario_datos_abiertos_150630.csv",2015-06-30 14:52:00,"3","10"
-"presidencia","http://adela.datos.gob.mx//instituciones/presidencia","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/138/_inventario__presidencia_-_primer_informe_-_formato_corregido__2_.csv",2014-09-03 01:13:00,"19","826"
-"sectur","http://adela.datos.gob.mx//instituciones/sectur","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/367/00_UTF_8_Campanas2013_2014DEMCPTM.csv",2015-06-18 23:51:00,"1","1"
-"conapo","http://adela.datos.gob.mx//instituciones/conapo","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/353/inventario_db_conapo.csv",2015-06-11 01:00:00,"2","11"
-"ayuntamiento-de-zapopan","http://adela.datos.gob.mx//instituciones/ayuntamiento-de-zapopan","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/365/metadata.csv",2015-06-18 23:44:00,"8","21"
-"inegi","http://adela.datos.gob.mx//instituciones/inegi","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/378/plantilla_de_inventario_INEGIjunio.csv",2015-06-26 16:24:00,"68","1464"
-"cenapred","http://adela.datos.gob.mx//instituciones/cenapred","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/356/Catalogodatos_CENAPRED.CSV",2015-06-11 22:13:00,"6","6"
-"issfam","http://adela.datos.gob.mx//instituciones/issfam",NA,NA,NA,NA
-"infotec","http://adela.datos.gob.mx//instituciones/infotec",NA,NA,NA,NA
-"imta","http://adela.datos.gob.mx//instituciones/imta",NA,NA,NA,NA
-"procuraduria-agraria","http://adela.datos.gob.mx//instituciones/procuraduria-agraria",NA,NA,NA,NA
-"estado-de-morelos","http://adela.datos.gob.mx//instituciones/estado-de-morelos","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/281/dataSet2.csv",2015-02-27 00:08:00,"2","3"
-"imt","http://adela.datos.gob.mx//instituciones/imt","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/360/Copia_de_Cat_logo_Red_Nacional_de_Caminosv2.0.csv",2015-06-17 15:54:00,"1","1"
-"tu-gobierno-en-mapas","http://adela.datos.gob.mx//instituciones/tu-gobierno-en-mapas","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/219/tgm-catalogo-v2.csv",2014-12-12 03:02:00,"20","845"
-"conagua","http://adela.datos.gob.mx//instituciones/conagua","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/58/_inventario__conagua_-_Sheet1.csv",2014-06-25 22:09:00,"7","19"
-"semarnat","http://adela.datos.gob.mx//instituciones/semarnat",NA,NA,NA,NA
-"shcp","http://adela.datos.gob.mx//instituciones/shcp","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/337/Plantilla_datos_abiertos_27052015_csv.csv",2015-05-27 22:10:00,"7","45"
-"pgr","http://adela.datos.gob.mx//instituciones/pgr","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/161/Inventario-de-datos_PGR-xlsx__1_.csv",2014-09-26 20:30:00,"1","3"
-"se","http://adela.datos.gob.mx//instituciones/se","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/151/Inventario-de-datos-xlsx.csv",2014-09-23 23:00:00,"1","1"
-"promexico","http://adela.datos.gob.mx//instituciones/promexico","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/131/DatosAbiertosProM_xico.csv",2014-08-22 21:05:00,"3","3"
-"cfe","http://adela.datos.gob.mx//instituciones/cfe","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/310/Inventariov1.2CFEProductivo.csv",2015-04-13 16:51:00,"10","10"
-"instituto-federal-de-telecomunicaciones","http://adela.datos.gob.mx//instituciones/instituto-federal-de-telecomunicaciones",NA,NA,NA,NA
-"salud","http://adela.datos.gob.mx//instituciones/salud","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/359/InventarioDatosAbiertos-SaludDGIS-20150615-1-DGIS.csv",2015-06-16 22:38:00,"4","23"
-"coneval","http://adela.datos.gob.mx//instituciones/coneval","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/346/Inventario_Completo_7.0.csv",2015-06-01 21:51:00,"10","37"
+"inst","descargas","url","url_cat","fecha","conjuntos","recursos"
+"ayuntamiento-de-san-luis-potosi",146,"http://adela.datos.gob.mx//instituciones/ayuntamiento-de-san-luis-potosi","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/218/Inventario_-_Ayuntamiento_de_SLP.csv","2014-12-10 20:33:00",2,4
+"ayuntamiento-de-san-pedro-garza-garcia",68,"http://adela.datos.gob.mx//instituciones/ayuntamiento-de-san-pedro-garza-garcia","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/231/Cat_logo_San_Pedro-utf8.csv","2014-12-23 23:42:00",2,14
+"ayuntamiento-de-xalapa",825,"http://adela.datos.gob.mx//instituciones/ayuntamiento-de-xalapa","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/355/InventarioDatosXalapa18052015.csv","2015-06-11 18:08:00",10,29
+"ayuntamiento-de-zapopan",3,"http://adela.datos.gob.mx//instituciones/ayuntamiento-de-zapopan","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/365/metadata.csv","2015-06-18 23:44:00",8,21
+"cdi",82,"http://adela.datos.gob.mx//instituciones/cdi","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/292/catalogo_v2.0_CDI.csv","2015-03-03 00:52:00",5,5
+"cfe",722,"http://adela.datos.gob.mx//instituciones/cfe","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/310/Inventariov1.2CFEProductivo.csv","2015-04-13 16:51:00",10,10
+"conagua",1076,"http://adela.datos.gob.mx//instituciones/conagua","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/58/_inventario__conagua_-_Sheet1.csv","2014-06-25 22:09:00",7,19
+"conapo",1976,"http://adela.datos.gob.mx//instituciones/conapo","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/353/inventario_db_conapo.csv","2015-06-11 01:00:00",2,11
+"coneval",1681,"http://adela.datos.gob.mx//instituciones/coneval","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/346/Inventario_Completo_7.0.csv","2015-06-01 21:51:00",10,37
+"estado-de-morelos",12,"http://adela.datos.gob.mx//instituciones/estado-de-morelos","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/281/dataSet2.csv","2015-02-27 00:08:00",2,3
+"estado-de-puebla",269,"http://adela.datos.gob.mx//instituciones/estado-de-puebla","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/259/BlocDeNotasSinErrores.csv","2015-01-26 16:41:00",12,12
+"fonacot",2,"http://adela.datos.gob.mx//instituciones/fonacot","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/345/plantilla_de_inventario_fonacot_290515.csv","2015-05-29 23:43:00",2,2
+"iepsa",3,"http://adela.datos.gob.mx//instituciones/iepsa","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/380/Cat_logo-Inventario_datos_abiertos_150630.csv","2015-06-30 14:52:00",3,10
+"imss",643,"http://adela.datos.gob.mx//instituciones/imss","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/368/IMSS_-_Sheet1__13_.csv","2015-06-19 00:01:00",5,159
+"imt",3,"http://adela.datos.gob.mx//instituciones/imt","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/360/Copia_de_Cat_logo_Red_Nacional_de_Caminosv2.0.csv","2015-06-17 15:54:00",1,1
+"inegi",3508,"http://adela.datos.gob.mx//instituciones/inegi","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/378/plantilla_de_inventario_INEGIjunio.csv","2015-06-26 16:24:00",68,1464
+"nafin",191,"http://adela.datos.gob.mx//instituciones/nafin","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/349/Inventario_v2.0_-_NAFIN.csv","2015-06-09 18:55:00",1,6
+"pemex",2184,"http://adela.datos.gob.mx//instituciones/pemex","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/370/pemex_bueno_03dic2014.csv","2015-06-23 16:34:00",64,121
+"pgr",55,"http://adela.datos.gob.mx//instituciones/pgr","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/161/Inventario-de-datos_PGR-xlsx__1_.csv","2014-09-26 20:30:00",1,3
+"presidencia",8094,"http://adela.datos.gob.mx//instituciones/presidencia","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/138/_inventario__presidencia_-_primer_informe_-_formato_corregido__2_.csv","2014-09-03 01:13:00",19,826
+"promexico",60,"http://adela.datos.gob.mx//instituciones/promexico","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/131/DatosAbiertosProM_xico.csv","2014-08-22 21:05:00",3,3
+"ran",8141,"http://adela.datos.gob.mx//instituciones/ran","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/305/RAN_Inventario_201503.csv","2015-03-31 16:03:00",6,192
+"sagarpa",1513,"http://adela.datos.gob.mx//instituciones/sagarpa","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/311/Inventario_csv14abr15__UTF8_.csv","2015-04-14 17:17:00",30,92
+"salud",367,"http://adela.datos.gob.mx//instituciones/salud","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/359/InventarioDatosAbiertos-SaludDGIS-20150615-1-DGIS.csv","2015-06-16 22:38:00",4,23
+"sct",4331,"http://adela.datos.gob.mx//instituciones/sct","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/371/InventarioSCT_20141129.csv","2015-06-23 17:25:00",6,42
+"se",833,"http://adela.datos.gob.mx//instituciones/se","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/389/CatalogoDatos_DGRM_FInal.csv","2015-07-03 23:58:00",5,16
+"sectur",18,"http://adela.datos.gob.mx//instituciones/sectur","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/367/00_UTF_8_Campanas2013_2014DEMCPTM.csv","2015-06-18 23:51:00",1,1
+"sedesol",4877,"http://adela.datos.gob.mx//instituciones/sedesol","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/335/Inventario_v2.0_SEDESOL.csv","2015-05-22 00:20:00",87,358
+"sener",768,"http://adela.datos.gob.mx//instituciones/sener","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/232/INVENTARIO_DATOS_SENER_11122014_FINAL_V1_CSV_UTF8.csv","2014-12-29 17:06:00",7,87
+"sep",11410,"http://adela.datos.gob.mx//instituciones/sep","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/302/Cat_logo_v2.0_-_final.csv","2015-03-26 23:26:00",6,54
+"servicio-geologico-mexicano",80,"http://adela.datos.gob.mx//instituciones/servicio-geologico-mexicano","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/318/SGM_3.csv","2015-04-17 17:26:00",2,13
+"shcp",410,"http://adela.datos.gob.mx//instituciones/shcp","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/337/Plantilla_datos_abiertos_27052015_csv.csv","2015-05-27 22:10:00",7,45
+"tu-gobierno-en-mapas",4917,"http://adela.datos.gob.mx//instituciones/tu-gobierno-en-mapas","https://adela-production.s3.amazonaws.com/uploads/inventory/csv_file/219/tgm-catalogo-v2.csv","2014-12-12 03:02:00",20,845

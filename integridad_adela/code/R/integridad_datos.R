@@ -1,9 +1,8 @@
 ## Código que revisa que el formato de los datos sea el correcto.
-library(lubridate)
-library(plyr)
-library(dplyr)
-library(stringr)
-##---------------------------------
+suppressPackageStartupMessages(library(lubridate))
+suppressPackageStartupMessages(library(plyr))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(stringr))
 ## Funciones
 ##---------------------------------
 ####################################

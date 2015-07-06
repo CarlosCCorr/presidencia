@@ -10,6 +10,7 @@ suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(httr))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(RGoogleAnalytics))
+suppressPackageStartupMessages(library(data.table))
 ##---------------------------------------------------------------------------
 ##---------------------------------------------------------------------------
 ##---------------------------------------------------------------------------
@@ -331,20 +332,24 @@ inventory.data <- function(url="http://adela.datos.gob.mx/"){
 ##------------------------------
 ## workflow.
 ##------------------------------
-workflow <- function(){
+workflow <- function(A){
     ## Calcula MAT tomando en consideracion unicamente aquellas dependencias
     ## que tienen actualizaciones.
+    ## IN
+    ## la matriz de Análisis.
     ## OUT
     ## Mat actualizada.
     ##------------------------------------------------------------
+    ## LECTURA DE DATOS
     ## Obtenemos la version pasada de MAT.
     MAT           <-
-        read.csv("../data/MAT.csv",
+        read.csv("./data/MAT.csv",
                  stringsAsFactors = FALSE)
     ## Obtenemos la version pasada del inventario.
     inventory     <-
-        read.csv("../data/inventory.csv",
+        read.csv("./data/inventory.csv",
                  stringsAsFactors = FALSE)
+    ## ULTIMAS VERSIONES
     ## Obtenemos la version nueva del inventario.
     new.inventory <- inventory.data()
     ## Obtenemos las ligas a los catalogos de las
@@ -352,18 +357,24 @@ workflow <- function(){
     link.cat.act  <- get.all.links.new(inventory, new.inventory)
     ## Creamos la nueva MAT
     new.MAT       <- create.new.MAT(link.cat.act)
+    ## INTEGRAR ANALYTICS
+    ## Agregamos analytics a MAT
+    new.MAT.an    <- mat.analytics(new.MAT, A)
+    ## ACTUALIZAR
     ## Actualizamos a MAT
-    MAT.act       <- act.MAT(MAT, new.MAT)
-    ## Guardamos los cambios
+    MAT.act       <- act.MAT(MAT, new.MAT.an)
+    ## Agregamos analytics a inventory
+    new.inventory <- inventory.MAT(new.inventory, MAT.act)
+    ## GUARDAR CAMBIOS
     if(nrow(new.inventory) > 0 & nrow(new.MAT) > 0){
         write.csv(new.inventory,
-                  "../data/inventory.csv",
+                  "./data/inventory.csv",
                   row.names = FALSE)
         write.csv(MAT.act,
-                  "../data/MAT.csv",
+                  "./data/MAT.csv",
                   row.names = FALSE)
     }
-    ## Resultados
+    ## IMPRIMIR RESULTADOS
     resultados <- data.frame(fecha_prueba = date(),
                              catalogos_agregados = nrow(new.inventory) - nrow(inventory),
                              bases_agregadas     = nrow(MAT.act) - nrow(MAT),
@@ -449,6 +460,7 @@ check.all <- function(MAT){
 ## mat.analytics
 ##------------------------------
 mat.analytics <- function(MAT, A){
+    A$eventLabel  <- ldply(A$eventLabel, function(t)t <- URLdecode(t))[,1]
     MAT$descargas <- ldply(MAT$URL,function(t){
                                if(t %in% A$eventLabel){
                                    t <- sum(A$totalEvents[t == A$eventLabel])
@@ -459,9 +471,21 @@ mat.analytics <- function(MAT, A){
                            })[,1]
     no.match <- A[! A$eventLabel %in% MAT$URL, ]
     write.csv(no.match,
-              "./data/no_match.csv",
+              "./data/no_match_mat.csv",
               row.names = FALSE)
     MAT
+}
+##------------------------------
+## inventory.analytics
+##------------------------------
+inventory.MAT <- function(inventory, MAT){
+    inventory$descargas <- NULL
+    mat.1 <- filter(MAT, Version == 1)
+    mat.1 <- data.table(mat.1)
+    setkey(mat.1, Institucion)
+    descargas <- mat.1[, sum(descargas), by = Institucion]
+    setnames(descargas,names(descargas), c("inst","descargas"))
+    merge(descargas, inventory)
 }
 #############################################################################
 ################################### PRUEBA ##################################
@@ -470,10 +494,10 @@ mat.analytics <- function(MAT, A){
 MAT   <- read.csv("./data/MAT.csv",
                   stringsAsFactors = FALSE,
                   encoding = "UTF-8")
-mat.1 <- filter(MAT, Version == 1)
+inventory <- read.csv("./data/inventory.csv",
+                      stringsAsFactors = FALSE)
 A     <- read.csv("./data/A.csv",
                   stringsAsFactors = FALSE,
                   encoding = "UTF-8")
-A$eventLabel <- ldply(A$eventLabel, URLdecode)[,1]
-## Hacer matching
-a.mat <- filter(A, A$eventLabel %in% mat.1$URL)
+## La idea es hacer que MAT haga match con A y con inventory.
+
