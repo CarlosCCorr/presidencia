@@ -89,11 +89,19 @@ prob.coord <- function(col){
     ## col: la columna que se quiere inspeccionar
     ## OUT
     ## el porcentaje de entradas que cumplen con el patrón
-    pattern <-
+    prob <- c()
+    pattern1 <-
         "^-?[0-9]{2,3}.{1}[0-9]{3,}"
+    pattern2 <-
+        "([0-9]{2,3}[[:punct:]]{1}){1}([0-9]{2}[[:punct:]]{1}){1}([0-9]{2}[[:punct:]]{2}){1}"
     col.match  <- ldply(str_split(col," "),function(t)t<- t[[1]][1])
-    true_match <- na.omit(str_length(str_match(col,pattern)[,1]) == str_length(col.match[,1]))
-    sum(true_match)/length(col)
+    true_match1 <- na.omit(str_length(str_match(col,pattern1)[,1]) == str_length(col.match[,1]))
+    true_match2 <- na.omit(str_length(str_match(col,pattern2)[,1]) == str_length(col.match[,1]))
+    prob1 <- sum(true_match1)/length(col)
+    prob2 <- sum(true_match2)/length(col)
+    prob[1] <- prob1
+    prob[2] <- prob2
+    prob
 }
 
 ##---------------------------------
@@ -106,11 +114,27 @@ ident.coord <- function(df, thresh = .7){
     ## df: data.frame de la que se quieren verificar las columnas
     ## OUT
     ## data.frame con las columnas que respresentan las coordenadas.
-    res <- data.frame(matrix(NA,ncol = 2, nrow = nrow(df)))
-    coords  <- df[,apply(df, 2,function(t) t <- prob.coord(t) > thresh)]
-    res[,1] <- coords[, which(coords[1,]<0) ]
-    res[,2] <- coords[, which(coords[1,]>0) ]
-    names(res) <- c("long","lat")
+    res <- list()
+    res1        <- data.frame(matrix(NA,ncol = 2, nrow = nrow(df)))
+    res2        <- data.frame(matrix(NA,ncol = 2, nrow = nrow(df)))
+    coords1     <- df[,apply(df, 2,function(t) t <- prob.coord(t)[1] > thresh)]
+    coords2     <- df[,apply(df, 2,function(t) t <- prob.coord(t)[2] > thresh)]
+    if(ncol(coords1)>0){
+      long <-
+          apply(coords1,2,function(t)t<- sum(str_detect(t,"[0-9]{3}[[:punct:]]{1}")) > 0)
+      res1[,1]     <- coords1[long]
+      res1[,2]     <- coords1[1-long]
+      names(res1)  <- c("long","lat")
+      res[[1]] <- res1
+  }
+    if(ncol(coords2)>0){
+        long <-
+            apply(coords2,2,function(t)t<- sum(str_detect(t,"[0-9]{3}[[:punct:]]{1}")) > 0)
+        res2[,1]     <- coords2[long]
+        res2[,2]     <- coords2[1-long]
+        names(res2)  <- c("long","lat")
+        res[[2]]     <- res2
+    }
     res
 }
 ##---------------------------------
@@ -119,7 +143,7 @@ ident.coord <- function(df, thresh = .7){
 correct.coord <- function(df){
     upper.left  <-  c(-121.615487, 32.812103)
     lower.right <-  c(-81.844979,  14.143912)
-    coords      <-  ident.coord(df)
+    coords      <-  ident.coord(df)[[1]]
     if(prod(upper.left[1]< coords$long)>0 & prod(coords$long<lower.right[1])>0){
         print('longitud dentro del territorio')
     }else{
