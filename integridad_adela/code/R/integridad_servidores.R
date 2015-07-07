@@ -174,7 +174,7 @@ get.all.links.new <- function(inventory, new.inventory){
 ##------------------------------
 ## get.links.adela
 ##------------------------------
-get.links.adela <- function(url,number){
+get.links.adela <- function(url, number){
     ## Obtiene las ligas de las instituciones que se encuentran en la pagina
     ## con el numero proporcionado.
     ## IN
@@ -182,9 +182,19 @@ get.links.adela <- function(url,number){
     ## number: el numero de la pagina.
     ## OUT
     ## arreglo que contiene todas las ligas que van a instituciones de la pagina
-    links <- get.links.number(url,number)
-    links <- paste0(url,links[str_detect(links,"instituciones")])
-    links <- links[str_detect(links,"instituciones")]
+##############################################
+    base.url <- paste0(url,"/?page=",number)
+    page     <- getURL(base.url)
+    tree     <- htmlParse(page)
+    links    <- xpathApply(tree,
+                        path = "//table[@class='expanded-table organizations-table']//a",
+                        fun  = xmlGetAttr,
+                        name = "href")
+    links <- unlist(links)
+    links
+##############################################
+    links <- paste0(url,links)
+#    links <- links[str_detect(links,"instituciones")]
     links
 }
 ##------------------------------
@@ -302,7 +312,7 @@ act.MAT <- function(MAT, new.MAT){
 ##------------------------------
 ## inventory.data
 ##------------------------------
-inventory.data <- function(url="http://adela.datos.gob.mx/"){
+inventory.data <- function(url="http://adela.datos.gob.mx"){
     ## Recorre e inspecciona todas las ligas de las bases
     ## de datos de las instituciones presentes en Adela
     ## IN

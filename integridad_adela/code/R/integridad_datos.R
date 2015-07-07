@@ -176,7 +176,7 @@ prob.entity <- function(col){
     sum(true_match)/length(col)    
 }
 ##---------------------------------
-## ident.entity
+## transform.entity
 ##---------------------------------
 transform.entity <- function(entity){
     ## Recibe una entidad federativa y las transforma en su clave INEGI
@@ -272,6 +272,13 @@ transform.entity <- function(entity){
     }
     entity
 }
+##---------------------------------
+## transform.entity.col
+##---------------------------------
+transform.entity.col <- function(col){
+    ldply(col,transform.entity)[,1]
+}
+
 ########################################################
 ########################################################
 ## Pruebas #############################################
