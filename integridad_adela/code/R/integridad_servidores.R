@@ -322,7 +322,7 @@ inventory.data <- function(url="http://adela.datos.gob.mx"){
     ##------------------------------------------------------------
     ## En esta seccion se obtienen todas las ligas a todas las instituciones
     ## que estan en adela. Y las ligas a los inventarios de las mismas.
-    count.adela  <- 3
+    count.adela  <- 1
     links.adela  <- get.links.adela( url, count.adela )
     length.links <- length(links.adela)
     ## En este ciclo se obtienen todas las instituciones que estan
