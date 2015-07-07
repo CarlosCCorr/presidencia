@@ -81,7 +81,7 @@ link.checker <- function(url){
                   http_status( GET( t ) ) 
                              if(u$category != 'success'){
                                  index  <- which(url == t)
-                                 ## browseURL(t)
+                                  browseURL(t)
                                  command1 <- paste0('import -window 0x03a00001 ./images/', index,'.jpeg')
                                  system(command1)
                                  ##                                 command2 <- paste0('okular ./images/', t, '.jpeg')
@@ -194,7 +194,7 @@ get.links.adela <- function(url, number){
     links
 ##############################################
     links <- paste0(url,links)
-#    links <- links[str_detect(links,"instituciones")]
+    links <- links[str_detect(links,"instituciones")]
     links
 }
 ##------------------------------
@@ -322,7 +322,7 @@ inventory.data <- function(url="http://adela.datos.gob.mx"){
     ##------------------------------------------------------------
     ## En esta seccion se obtienen todas las ligas a todas las instituciones
     ## que estan en adela. Y las ligas a los inventarios de las mismas.
-    count.adela  <- 1
+    count.adela  <- 3
     links.adela  <- get.links.adela( url, count.adela )
     length.links <- length(links.adela)
     ## En este ciclo se obtienen todas las instituciones que estan
