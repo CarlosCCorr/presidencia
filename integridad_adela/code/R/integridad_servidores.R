@@ -222,7 +222,7 @@ get.edit.inv <- function(url){
     ## OUT
     ## data.frame con la informacion de la ultima modificacion al inventario
     ## de datos de cada institucion.
-    inst      <- str_split(url,"/")[[1]][6]
+    inst      <- str_split(url,"/")[[1]][5]
     url_cat   <- get.links.inv(url)[1]
     if(!is.na(url_cat)){
         page      <- getURL(url)
