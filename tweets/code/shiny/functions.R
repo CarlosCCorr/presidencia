@@ -139,10 +139,31 @@ getRetweet <- function(entidad, n){
     tweetDf <- twListToDF(tweet)
     df      <- count(tweetDf$retweeted)
     df$freq <- df$freq/nrow(tweetDf)
-    ggplot(data = df, aes(x = x, y = freq)) +
+    names(df) <- c("Retweets","Porcentaje")
+    ggplot(data = df, aes(x = Retweets, y = Porcentaje)) +
         geom_bar(stat = "identity", fill ="#1565C0")  +
     theme(
         plot.background = element_blank(),
         panel.background = element_blank()
         )
+}
+## función para obtener la actividad de un usuario
+getTimeSeries <- function(entidad, n){
+    tweet   <- searchTwitter(entidad, n)
+    tweetDf <- twListToDF(tweet)
+    tseries <- count(tweetDf$created)
+    names(tseries) <- c("Fecha","Tweets")
+    tseries$Fecha  <- as.POSIXlt(tseries$Fecha)
+    ggplot(data = tseries, aes(x = Fecha, y = Tweets)) +
+        geom_line(color = "#1565C0",lwd = 2) +
+    theme(
+        plot.background = element_blank(),
+        panel.background = element_blank()
+        )
+}
+## función para obtener amigos de un usuario
+getfollows <- function(cuenta,n){
+    tweet   <- getUser(cuenta)
+    df      <- tweet$getFollowers(n)
+    unlist(df)
 }
