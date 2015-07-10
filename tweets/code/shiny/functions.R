@@ -120,8 +120,8 @@ consumer_key        <- "jvIzU7EpCOVHSpKZwIihQweFC"
 consumer_secret     <- "RtObIJuzJX7fwhHVafLGu3yHsdSacaornwAfddnCAuYWD9O8uh"
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_token_secret)
 ## función para procesar tweets
-getCleanTwitt <- function(entidad, N = 10){
-    tweet     <- searchTwitter(entidad, .encoding = "UTF-8")
+getCleanTwitt <- function(entidad,N=10,n){
+    tweet     <- searchTwitter(entidad,n)
     tweetDf   <- twListToDF(tweet)
     tweetMssg <- tweetDf$text
     ## Procesamiento
@@ -133,11 +133,16 @@ getCleanTwitt <- function(entidad, N = 10){
     words <- words[order(-words[,2]),]
     words[1:N,]
 }
-## Función que te regresa una base de datos de Tweets
-getTweetDB <- function(entity, geocode='20.665588,-103.343556,2mi', n = 25){
-    tweet <- searchTwitter(entidad, geocode, n = n)
-    df    <- twListToDF(tweet)
-    df
+## función para obtener porcentaje de retweets
+getRetweet <- function(entidad, n){
+    tweet   <- searchTwitter(entidad, n)
+    tweetDf <- twListToDF(tweet)
+    df      <- count(tweetDf$retweeted)
+    df$freq <- df$freq/nrow(tweetDf)
+    ggplot(data = df, aes(x = x, y = freq)) +
+        geom_bar(stat = "identity", fill ="#1565C0")  +
+    theme(
+        plot.background = element_blank(),
+        panel.background = element_blank()
+        )
 }
-## Pruebas
-##webPage<- "http://opinion.informador.com.mx/Rotonda/tag/alla-en-la-fuente/"

@@ -1,43 +1,23 @@
-library(shiny)
-
-# Define UI for dataset viewer application
-shinyUI(fluidPage(
-  
-  # Application title.
-  titlePanel("More Widgets"),
-  
-  # Sidebar with controls to select a dataset and specify the
-  # number of observations to view. The helpText function is
-  # also used to include clarifying text. Most notably, the
-  # inclusion of a submitButton defers the rendering of output
-  # until the user explicitly clicks the button (rather than
-  # doing it immediately when inputs change). This is useful if
-  # the computations required to render output are inordinately
-  # time-consuming.
-  sidebarLayout(theme = "theme.css",
-    sidebarPanel(
-      selectInput("dataset", "Choose a dataset:", 
-                  choices = c("rock", "pressure", "cars")),
-      
-      numericInput("obs", "Number of observations to view:", 10),
-      
-      helpText("Note: while the data view will show only the specified",
-               "number of observations, the summary will still be based",
-               "on the full dataset."),
-      
-      submitButton("Update View")
-    ),
-    
-    # Show a summary of the dataset and an HTML table with the
-    # requested number of observations. Note the use of the h4
-    # function to provide an additional header above each output
-    # section.
-    mainPanel(
-      h4("Summary"),
-      verbatimTextOutput("summary"),
-      
-      h4("Observations"),
-      tableOutput("view")
-    )
-  )
-))
+shinyUI(fluidPage(theme = "theme.css",
+                  titlePanel("Speakers"),
+                  sidebarLayout(
+                      sidebarPanel(
+                          textInput("speak", "Escribe el nombre de  un speaker:"),
+                          sliderInput("tweets", "Número de tweets a analizar:", min = 10,
+                                      max = 100, value = 50, step = 10),
+                                helpText("Nota: Puede que algunas búsquedas no desprendan resultados, esto se debe a que no se han encontrado tweets con los nombres seleccionados. Las búsquedas son en tiempo real."),
+                          submitButton("Analizar")
+                          ),
+                      mainPanel(
+                          tabsetPanel(
+                              tabPanel(h4("Palabras Asociadas"),
+                                       plotOutput("cloud")
+                                       ),
+                              tabPanel(h4("Palabras Asociadas"),
+                                       plotOutput("tweetRet")
+                                       )
+                              )
+                          
+                          )
+                      )
+                  ))
