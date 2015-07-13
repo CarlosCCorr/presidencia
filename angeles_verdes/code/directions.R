@@ -21,8 +21,8 @@ get_directions <- function(origen, destino, mode = "driving"){
     list(
         "durations"  = ldply(steps,function(t)t <- t$duration$text)[,1],
         "distance"   = ldply(steps,function(t)t <- t$distance$text)[,1],
-        "start_loc"  = ldply(steps,function(t)t <- t$start_location)[,1],
-        "end_loc"    = ldply(steps,function(t)t <- t$end_location)[,1]
+        "start_loc"  = ldply(steps,function(t)t <- t$start_location),
+        "end_loc"    = ldply(steps,function(t)t <- t$end_location)
         )
 }
 directions <- get_directions(origen,destino)
