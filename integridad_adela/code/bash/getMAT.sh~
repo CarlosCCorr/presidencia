@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+for i in $(cat ../../data/dependencies.txt)
+do
+    inst=$(echo $i | awk -F '/' '{print $2}')
+    data=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | {title:.["title"], url:.["downloadURL"], type:.["mediaType"], size:.["byteSize"]}' )
+    echo $data >> ../../data/MAT_test.json
+done
