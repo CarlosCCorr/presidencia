@@ -8,7 +8,7 @@ data   <- read.csv( "/home/lgarcia/proyectos/presidencia/data_analysis/serverUp/
 data   <- data[ data$Version == 1, ]
 url    <- data$URL
 ## Prueba
-test   <- ldply(url,
+ldply(url,
                 function( t ){ u <-
                     http_status( GET( t ) )
                                if(u$category != "success"){
