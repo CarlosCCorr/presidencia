@@ -15,6 +15,6 @@ do
 	    url_j=$(echo "$url"     | sed -n  "${j}p")
 	    type_j=$(echo "$type"   | sed -n  "${j}p")
 	    size_j=$(echo "$size"   | sed -n  "${j}p")
-	    echo "\"$inst\",$title_j,$type_j,$size_j" >> ../../data/MAT_test.csv
+	    echo "\"$inst\",$title_j,$url_j,$type_j,$size_j" >> ../../data/MAT_test.csv
 	done
 done

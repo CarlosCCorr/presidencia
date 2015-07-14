@@ -8,12 +8,13 @@ data   <- read.csv( "/home/lgarcia/proyectos/presidencia/data_analysis/serverUp/
 data   <- data[ data$Version == 1, ]
 url    <- data$URL
 ## Prueba
-test   <- plyr::ldply(url,
-                      function( t ){ u <-
-                          http_status( GET( t ) )
-                                     if(u$category != "success"){print(which(url==t))}
-                                     ##                    print(paste0("url: ", t,", test result: ", u$message))
-                                     u$category } )
+test   <- ldply(url,
+                function( t ){ u <-
+                    http_status( GET( t ) )
+                               if(u$category != "success"){
+                                   print(which(url==t))
+                               }
+                               u$category } )
 ## result <- data.frame( url = data$URL, test_result = test[,1] )
 ## data$result <- test[,1]
 ## write.csv(data, "./MAT_RES.csv", row.names = FALSE)

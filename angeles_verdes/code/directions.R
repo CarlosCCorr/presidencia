@@ -5,10 +5,10 @@ library(RCurl)
 library(plyr)
 library(stringr)
 library(data.table)
-## Crear query
-origen <- "DF"
-destino <- "Guadalajara"
-mode <- "driving"
+## Funciones
+##-------------------------------------
+## get_directions
+##-------------------------------------
 ## Calcula direcciones entre dos puntos
 ## esto está útil para graficarlos recorridos una vez que los tengamos ;)
 get_directions <- function(origen, destino, mode = "driving"){
@@ -27,7 +27,9 @@ get_directions <- function(origen, destino, mode = "driving"){
         "end_loc"    = ldply(steps,function(t)t <- t$end_location)
         )
 }
-directions <- get_directions(origen,destino)
+##-------------------------------------
+## get_distance
+##-------------------------------------
 ## Calcula distancia entre dos puntos
 ## falta hacer para distancia entre n puntos
 get_distance <- function(origen, destino){
@@ -41,7 +43,9 @@ get_distance <- function(origen, destino){
     duration    <- results$rows[[1]]$elements[[1]]$duration$text
     list("distance"=distance,"duration"=duration)
 }
-distance <- get_distance(origen,destino)
+##-------------------------------------
+## inf_dist
+##-------------------------------------
 ## Determina los puntos que se encuentran a
 ## una distancia medida en norma infinito
 ## menor a cierto parámetro
@@ -56,6 +60,9 @@ inf_dist <- function(coords, array, dist){
                                            dist, ]
     array.lat.near
 }
+##-------------------------------------
+## get_min_resc
+##-------------------------------------
 ## Determina los vehículos de rescate
 ## que se encontraban a una distancia mínima del
 ## punto del accidente.
@@ -67,8 +74,6 @@ get_min_resc  <- function(accident, rescuers){
 ## lectura de datos
 ## Recorridos de patrullas
 recorridos <- read.csv("../angeles_verdes/data/recorridos.csv", sep = ",")
-setkey(recorridos,Patrulla)
-setnames(recorridos, tolower(names(recorridos)))
 ## Accidentes
 accidentes <- fread("../angeles_verdes/data/angels_clean.csv", sep = ",")
 setnames(accidentes, tolower(names(accidentes)))
