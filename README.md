@@ -2,6 +2,13 @@
 
 Este repositorio contiene diversas rutinas utilizadas en el proceso de limpieza, estructuración, revisión y análisis de datos.
 
+## Requerimientos
+
+- [R (≥ 3.1.0)](http://www.r-project.org/)
+- [jq (≥ 1.4)](http://stedolan.github.io/jq/download/)
+
+************
+
 ## integridad_adela
 
 Como el nombre lo menciona, aquí se almacenan las diferentes rutinas que sirven para checar la calidad de los datos así como la disponibilidad de los mismos en la página de [adela](adela.datos.gob.mx).
