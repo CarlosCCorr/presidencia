@@ -2,6 +2,7 @@
 
 Este repositorio contiene diversas rutinas utilizadas en el proceso de limpieza, estructuración, revisión y análisis de datos.
 
+************
 ## Requerimientos
 
 - [R (≥ 3.1.0)](http://www.r-project.org/)
