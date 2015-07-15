@@ -19,6 +19,7 @@ do
 	value=$(echo "$name_dataset,$date_modified,$number_catalog,$number_base")
 	length=$(echo $value | awk -F ',' '{print NF}')	
     done
+    echo $value
     echo $value >> ../../data/inventory_test.csv
 done
 
