@@ -8,7 +8,18 @@ do
     date_modified=$(curl -ls $i | jq -c '.["modified"]')
     number_catalog=$(curl -ls $i | jq -c '.["dataset"] | length')
     number_base=$(curl -ls $i | jq -c '.["dataset"][]["distribution"] | length'| awk '{s+=$1} END {print s}')
-    echo "$name_dataset,$date_modified,$number_catalog,$number_base" >> ../../data/inventory_test.csv
+    value=$(echo "$name_dataset,$date_modified,$number_catalog,$number_base")
+    length=$(echo $value | awk -F ',' '{print NF}')
+    while [ $length -ne 4 ]
+    do
+	name_dataset=$(curl -ls $i | jq -c '.["title"]')
+	date_modified=$(curl -ls $i | jq -c '.["modified"]')
+	number_catalog=$(curl -ls $i | jq -c '.["dataset"] | length')
+	number_base=$(curl -ls $i | jq -c '.["dataset"][]["distribution"] | length'| awk '{s+=$1} END {print s}')
+	value=$(echo "$name_dataset,$date_modified,$number_catalog,$number_base")
+	length=$(echo $value | awk -F ',' '{print NF}')	
+    done
+    echo $value
 done
 
 
