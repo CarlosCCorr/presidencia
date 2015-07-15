@@ -2,19 +2,28 @@
 echo "institution,base_name,type,size" >> ../../data/MAT_test.csv
 for i in $(cat ../../data/dependencies.txt)
 do
-    inst=$(echo $i | awk -F '/' '{print $2}')
-    title=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | .["title"]' )
-    url=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | .["downloadURL"]' )
-    type=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | .["mediaType"]' )
-    size=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | .["byteSize"]' )
-    #    data=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | {title:.["title"], url:.["downloadURL"], type:.["mediaType"], size:.["byteSize"]}' )
-    length=$(echo "$title" | wc -l)
+    empty=1
+    while [ $empty -ne 0 ]
+    do
+	inst=$(echo $i | awk -F '/' '{print $2}')
+	title=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | .["title"]' )
+	url=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | .["downloadURL"]' )
+	type=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | .["mediaType"]' )
+	size=$(curl -ls $i | jq -c '.["dataset"][]["distribution"][] | .["byteSize"]' )
+	length=$(echo "$title" | wc -l)
 	for j in  `seq 1 $length`
 	do
 	    title_j=$(echo "$title" | sed -n  "${j}p")
 	    url_j=$(echo "$url"     | sed -n  "${j}p")
 	    type_j=$(echo "$type"   | sed -n  "${j}p")
 	    size_j=$(echo "$size"   | sed -n  "${j}p")
-	    echo "\"$inst\",$title_j,$url_j,$type_j,$size_j" >> ../../data/MAT_test.csv
+	    value=$(echo "\"$inst\",$title_j,$url_j,$type_j,$size_j")
+	    echo $value
+	    empty=$(echo $value | grep -E '(,,|,$|^,)' | wc -l)
+	    if [ $empty -eq 0 ]
+	    then
+		echo $value >> ../../data/MAT_test.csv
+	    fi
 	done
+    done
 done
