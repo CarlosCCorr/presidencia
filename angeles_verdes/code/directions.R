@@ -7,6 +7,7 @@ library(stringr)
 library(data.table)
 library(caret)
 library(dplyr)
+library(lubridate)
 ## Funciones
 ##-------------------------------------
 ## get_directions
@@ -63,14 +64,13 @@ inf_dist <- function(coords, array, dist){
     array.lat.near
 }
 ##-------------------------------------
-## get_min_resc
+## near_accident
 ##-------------------------------------
-## Determina los vehículos de rescate
-## que se encontraban a una distancia mínima del
-## punto del accidente.
-get_min_resc  <- function(accident, rescuers){
-    distances <- ldply(rescuers, function(t)t <- get_distance(t,accident)$distance)[,1]
-    distances[which(distances)==min(distances)]
+## Determina los puntos que se encuentran
+## más cerca de un accidente dado un intervalo
+## de tiempo.
+near_accident <- function(coords_acc, coords_rec, intervalo){
+    
 }
 ##################################################################
 ##################################################################
@@ -80,13 +80,17 @@ get_min_resc  <- function(accident, rescuers){
 ####################### lectura de datos #########################
 ## Leer datos referentes a recorridos de patrullas y accidentes
 ##################################################################
-recorridos <- read.csv("../../angeles_verdes/data/recorridos.csv", sep = ",")
+recorridos <- read.csv("../../../angeles_verdes/data/recorridos.csv",
+                       stringsAsFactors = FALSE)
+## Se encuentra en central Daylight Time
+recorridos$tiempo <- as.POSIXct(recorridos$tiempo)
 ## Accidentes
-accidentes <- read.csv("../../angeles_verdes/data/angels_clean.csv",
-                       sep = ",",
-                       encoding = "UTF-8")
+accidentes <- read.csv("../../../angeles_verdes/data/angels_clean.csv",
+                       encoding = "UTF-8",
+                       stringsAsFactors = FALSE)
 setnames(accidentes, tolower(names(accidentes)))
-accidentes$fechaservi <- as.Date(accidentes$fechaservi)
+## se encuentra en local mean time
+accidentes$fechaservi <- as.Date(accidentes$fechaservi,"%d/%m/%Y")
 
 #################### Preparativos Análisis #######################
 ## Se dividirán los datos en prueba y entrenamiento
