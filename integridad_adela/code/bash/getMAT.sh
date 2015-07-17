@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-echo "institution,url,base_name,type,size" >> ../../data/MAT_test.csv
+echo "institution,base_name,url,type,size" >> ../../data/MAT_test.csv
 for i in $(cat ../../data/dependencies.txt)
 do
     empty=1
