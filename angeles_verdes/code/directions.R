@@ -5,6 +5,8 @@ library(RCurl)
 library(plyr)
 library(stringr)
 library(data.table)
+library(caret)
+library(dplyr)
 ## Funciones
 ##-------------------------------------
 ## get_directions
@@ -70,13 +72,61 @@ get_min_resc  <- function(accident, rescuers){
     distances <- ldply(rescuers, function(t)t <- get_distance(t,accident)$distance)[,1]
     distances[which(distances)==min(distances)]
 }
-############################ Pruebas ############################
-## lectura de datos
-## Recorridos de patrullas
-recorridos <- read.csv("../angeles_verdes/data/recorridos.csv", sep = ",")
+##################################################################
+##################################################################
+##################################################################
+##################################################################
+
+####################### lectura de datos #########################
+## Leer datos referentes a recorridos de patrullas y accidentes
+##################################################################
+recorridos <- read.csv("../../angeles_verdes/data/recorridos.csv", sep = ",")
 ## Accidentes
-accidentes <- fread("../angeles_verdes/data/angels_clean.csv", sep = ",")
+accidentes <- read.csv("../../angeles_verdes/data/angels_clean.csv",
+                       sep = ",",
+                       encoding = "UTF-8")
 setnames(accidentes, tolower(names(accidentes)))
+accidentes$fechaservi <- as.Date(accidentes$fechaservi)
+
+#################### Preparativos Análisis #######################
+## Se dividirán los datos en prueba y entrenamiento
+##################################################################
+set.seed(123454321)
+trainIndex <- createDataPartition(accidentes$servicio,
+                                  p = .8,
+                                  list = FALSE,
+                                  times = 1)
+acc_train <- accidentes[trainIndex,]
+
 ############################ Análisis ############################
-## Análisis exploratorio
-test_coord <- c(30.637415,-112.541097)
+#### Ingeniería de variables
+### Los pasos a realizar son los siguientes
+## Análisis y tratamiento de valores faltantes
+## Análisis de varianza de predictores
+## Análisis y detección de predictores sesgados
+## Análisis y detección de datos aberrantes
+## Análisis y detección de correlación en los predictores
+#### Selección de variables
+## Identificación de posible separación de clases
+##################################################################
+## Para llevara a cabo la ingeniería de variables
+## obtendremos 10 muestras equivalentes al 30% de los
+## datos. De esta manera, 
+trainIndex <- createDataPartition(acc_train$servicio,
+                                  p = .3,
+                                  list = FALSE,
+                                  times = 10)
+acc_exp <- accidentes[trainIndex[,1],]
+###------------------------------------------------------
+## Análisis y tratamiento de datos faltantes
+###------------------------------------------------------
+## Análisis de varianza de predictores
+###------------------------------------------------------
+nzv <- nearZeroVar(acc_train, saveMetrics= TRUE)
+## el número de extranjeros y opinión tienen varianza casi cero.
+acc_exp <- select(acc_exp, -matches("opinion","totextranj"))
+###------------------------------------------------------
+## Análisis y tratamiento de datos correlacionados
+###------------------------------------------------------
+## Existen varios predictores que se encuentran trivialmente correlacionados.
+
