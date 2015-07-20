@@ -8,6 +8,7 @@ library(data.table)
 library(caret)
 library(dplyr)
 library(lubridate)
+library(geosphere)
 ## Funciones
 ##-------------------------------------
 ## get_directions
@@ -47,34 +48,70 @@ get_distance <- function(origen, destino){
     list("distance"=distance,"duration"=duration)
 }
 ##-------------------------------------
-## inf_dist
-##-------------------------------------
-## Determina los puntos que se encuentran a
-## una distancia medida en norma infinito
-## menor a cierto parámetro
-inf_dist <- function(coords, array, dist){
-    array.long.near <- array[
-                             abs(array$long -
-                                     coords[2]) <
-                                 dist, ]
-    array.lat.near  <- array.long.near[
-                                       abs(array.long.near$lat -
-                                               coords[1]) <
-                                           dist, ]
-    array.lat.near
-}
-##-------------------------------------
 ## near_accident
 ##-------------------------------------
-## Determina los puntos que se encuentran
+## Determina los k puntos que se encuentran
 ## más cerca de un accidente dado un intervalo
 ## de tiempo.
-near_accident <- function(coords_acc, coords_rec){
-    coords_rec <- coords_rec[as.Date(coords_rec$tiempo) == coords_acc$fechaservi, ]
-    coords_rec
+near_accident <- function(accidente,
+                          recorridos,
+                          intervalo = 2.1e4,
+                          k = 3){
+    ## Esto me da a los recorridos que estan en una vecindad
+    ## de tamaño intervalo del accidente.
+    recorridos <-
+        recorridos[recorridos$tiempo <= accidente$fecha + intervalo &
+                       recorridos$tiempo >= accidente$fecha - intervalo, ]
+    ## Es necesario obtener la distancia carretera entre el accidente y los
+    ## recorridos 
+    coords_accidente <- accidente[,c(12,13)]
+    coords_recorrido <- recorridos[,c(3,4)]
+    ## para esto usamos la distancia geodésica.
+    distancia_geo  <-
+        apply(coords_recorrido[,c(2,1)],1,function(t)t <-
+            distCosine(t, coords_accidente[,c(2,1)])/1e3)
+    ## Obtenemos los más cercanos
+    recorridos$distancia_geo <- distancia_geo
+    k_vecinos <- head(recorridos[order(distancia_geo),], k)
+    ## continuamos con la distancia carretera
+    distancia_carr <-
+        apply(k_vecinos[,c(3,4)],
+              1,
+              function(t)t <-{
+                  get_distance(
+                      paste(as.character(t),
+                            collapse = ","),
+                      paste(
+                          as.character(coords_accidente),
+                          collapse = ",")
+                               )$distance
+              }
+              )
+    k_vecinos$distancia_carr <- distancia_carr
+    k_vecinos
 }
+##-------------------------------------
+## k_near_accident
+##-------------------------------------
+## Determina los k  puntos que se encuentran
+## más cerca de cada uno de los accidentes dado un intervaloo
+## de tiempo.
+k_near_accident <- function(accidentes,
+                            recorridos,
+                            intervalo = 2.1e4,
+                            k = 3){
+    dlply(accidentes,1,
+          function(t)t <-
+              near_accident(t,
+                            recorridos,
+                            intervalo,
+                            k)) 
+}
+
+
 ##################################################################
 ##################################################################
+##############################PRUEBAS#############################
 ##################################################################
 ##################################################################
 
@@ -91,11 +128,23 @@ accidentes <- read.csv("../../angeles_verdes/data/base_hora.csv",
                        encoding = "latin1",
                        stringsAsFactors = FALSE)
 accidentes$fecha <- as.POSIXct(accidentes$fecha)
+accidentes_acc   <- filter(accidentes, servicio == "Accidente")
+in_time_acc <- accidentes_acc[accidentes_acc$fecha <= max(recorridos$tiempo) &
+                                  accidentes_acc$fecha >= min(recorridos$tiempo),]
 
-## se encuentra en local mean time
-in_time_acc <- accidentes[accidentes$fecha <= max(recorridos$tiempo) &
-                              accidentes$fecha >= min(recorridos$tiempo),]
-mismo_dia <- dlply(in_time_acc,1,function(t)t <- near_accident(t,recorridos))
+## Prueba distancia más corta
+k_vecinos_accidentes <- k_near_accident(in_time_acc, recorridos)
+
+
+
+
+
+
+
+
+
+
+
 #################### Preparativos Análisis #######################
 ## Se dividirán los datos en prueba y entrenamiento
 ##################################################################
