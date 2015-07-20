@@ -48,6 +48,33 @@ get_distance <- function(origen, destino){
     list("distance"=distance,"duration"=duration)
 }
 ##-------------------------------------
+## near_accident_id
+##-------------------------------------
+## Determina los k puntos que se encuentran
+## más cerca de un accidente dado un intervalo
+## de tiempo.
+near_accident_id<- function(accidente, recorridos, intervalo=2.1e4){
+    ## Esto me da a los recorridos que estan en una vecindad
+    ## de tamaño intervalo del accidente.
+    recorridos <-
+        recorridos[recorridos$tiempo <= accidente$fecha + intervalo &
+                       recorridos$tiempo >= accidente$fecha - intervalo, ]
+    ## Es necesario obtener la distancia carretera entre el accidente y los
+    ## recorridos 
+    coords_accidente <- accidente[,c(12,13)]
+    coords_recorrido <- recorridos[,c(3,4)]
+    ## para esto usamos la distancia geodésica.
+    distancia_geo  <-
+        apply(coords_recorrido[,c(2,1)],1,function(t)t <-
+            distCosine(t, coords_accidente[,c(2,1)])/1e3)
+    ## Obtenemos los más cercanos
+    recorridos$distancia_geo <- distancia_geo
+    recorridos <- data.table(recorridos)
+    dist_accident_id <- recorridos[,min(distancia_geo), by = patrulla]
+    setNames(dist_accident_id,
+             c("patrulla","dist"))
+}
+##-------------------------------------
 ## near_accident
 ##-------------------------------------
 ## Determina los k puntos que se encuentran
@@ -84,11 +111,28 @@ near_accident <- function(accidente,
                       paste(
                           as.character(coords_accidente),
                           collapse = ",")
-                               )$distance
+                      )$distance
               }
               )
     k_vecinos$distancia_carr <- distancia_carr
     k_vecinos
+}
+##-------------------------------------
+## k_near_accident_id
+##-------------------------------------
+## Determina los k  puntos que se encuentran
+## más cerca de cada uno de los puntos por id
+## de tiempo.
+k_near_accident_id <- function(accidentes,
+                               recorridos,
+                               intervalo = 2.1e4){
+    dlply(accidentes,1,
+          function(t)t <-
+              near_accident_id(t,
+                               recorridos,
+                               intervalo
+                               )
+          ) 
 }
 ##-------------------------------------
 ## k_near_accident
@@ -107,8 +151,6 @@ k_near_accident <- function(accidentes,
                             intervalo,
                             k)) 
 }
-
-
 ##################################################################
 ##################################################################
 ##############################PRUEBAS#############################
@@ -134,6 +176,7 @@ in_time_acc <- accidentes_acc[accidentes_acc$fecha <= max(recorridos$tiempo) &
 
 ## Prueba distancia más corta
 k_vecinos_accidentes <- k_near_accident(in_time_acc, recorridos)
+k_vecinos_accidentes <- k_near_accident_id(in_time_acc, recorridos)
 
 
 
