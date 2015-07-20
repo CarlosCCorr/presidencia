@@ -69,8 +69,9 @@ inf_dist <- function(coords, array, dist){
 ## Determina los puntos que se encuentran
 ## más cerca de un accidente dado un intervalo
 ## de tiempo.
-near_accident <- function(coords_acc, coords_rec, intervalo){
-    
+near_accident <- function(coords_acc, coords_rec){
+    coords_rec <- coords_rec[as.Date(coords_rec$tiempo) == coords_acc$fechaservi, ]
+    coords_rec
 }
 ##################################################################
 ##################################################################
@@ -80,18 +81,21 @@ near_accident <- function(coords_acc, coords_rec, intervalo){
 ####################### lectura de datos #########################
 ## Leer datos referentes a recorridos de patrullas y accidentes
 ##################################################################
-recorridos <- read.csv("../../../angeles_verdes/data/recorridos.csv",
+## Recorridos
+recorridos <- read.csv("../../angeles_verdes/data/recorridos.csv",
                        stringsAsFactors = FALSE)
-## Se encuentra en central Daylight Time
 recorridos$tiempo <- as.POSIXct(recorridos$tiempo)
-## Accidentes
-accidentes <- read.csv("../../../angeles_verdes/data/angels_clean.csv",
-                       encoding = "UTF-8",
-                       stringsAsFactors = FALSE)
-setnames(accidentes, tolower(names(accidentes)))
-## se encuentra en local mean time
-accidentes$fechaservi <- as.Date(accidentes$fechaservi,"%d/%m/%Y")
 
+## Accidentes
+accidentes <- read.csv("../../angeles_verdes/data/base_hora.csv",
+                       encoding = "latin1",
+                       stringsAsFactors = FALSE)
+accidentes$fecha <- as.POSIXct(accidentes$fecha)
+
+## se encuentra en local mean time
+in_time_acc <- accidentes[accidentes$fecha <= max(recorridos$tiempo) &
+                              accidentes$fecha >= min(recorridos$tiempo),]
+mismo_dia <- dlply(in_time_acc,1,function(t)t <- near_accident(t,recorridos))
 #################### Preparativos Análisis #######################
 ## Se dividirán los datos en prueba y entrenamiento
 ##################################################################
