@@ -1,0 +1,232 @@
+<link href="http://kevinburke.bitbucket.org/markdowncss/markdown.css" rel="stylesheet"></link>
+<style>
+h1 {
+	color:#424242;
+}
+h2 {
+	color:#6200EA;
+}
+h3 {
+	color:#424242;
+}
+h4{
+	color:#6200EA;
+}
+h5{
+	color:#9E9E9E;
+}
+h6{
+	color:#3F51B5;
+}
+div {
+	text-align:justify;
+	text-justify:inter-word;
+}
+hr{
+	border-width:4px;
+	color:#1A237E;
+}
+br{
+	line-height:100%;
+}
+</style>
+
+
+# Análisis de accidentes y <br> recorridos
+## Ángeles Verdes
+*****
+
+<br>
+
+### Objetivo
+
+El objetivo de este documento es ajustar un modelo de predicción a los datos sobre los accidentes y servicios que **Ángeles Verdes** registra en la carretera *Ensenada - Tijuana*. Una vez hecho esto, se implementará un algoritmo de asignación que permita aprovechar los recursos de manera más eficiente y propicie la cobertura de un mayor número de accidentes.
+
+### Metodología
+
+#### Análisis exploratorio
+
+```{R, echo = FALSE, message = FALSE}
+## Librerías utilizadas
+library(ggplot2)
+library(ggmap)
+library(lubridate)
+library(grid)
+library(dplyr)
+library(plyr)
+library(data.table)
+
+## Lectura de datos
+recorridos <- read.csv("../../../angeles_verdes/data/recorridos.csv",
+		       stringsAsFactors = FALSE)
+recorridos$tiempo <- as.POSIXct(recorridos$tiempo)
+
+## Accidentes
+accidentes_tot <- read.csv("../../../angeles_verdes/data/base_hora_clean.csv", stringsAsFactors = FALSE)
+accidentes_tot$fecha <- as.POSIXct(accidentes_tot$fecha)
+accidentes <- accidentes_tot[accidentes_tot$fecha <= max(recorridos$tiempo) &
+			      accidentes_tot$fecha >= min(recorridos$tiempo),]
+
+```
+
+Se llevará a cabo un análisis explorartorio de las variables asociadas a los accidentes y de servicios que **Ángeles Verdes** presta a los usuarios de la autopista  *Ensenada - Tijuana*. Así como de las rutas y recorridos que las unidades realizan en la zona. Cabe mencionar que la base de datos de accidentes contiene datos que se encuentran en el intervalo temporal **[2014-01-01 01:01:0 - 2014-08-31 20:21:00]** mientras que la muestra de recorridos contempla datos en el intervalo **[2014-05-22 08:22:34 - 2014-12-31 20:32:36]**. Por lo tanto se procederá a hacer el análisis exploratorio y a entrenar el algoritmo en los datos que se encuentran en ambos intervalos y a llevar a cabo la prueba de los resultados con los datos no contenidos en los recorridos. Es necesario tomar en consideración que los resultados aquí expuestos no están ajustados por volumen de viajes llevados a cabo por día de la semana (ya que no se cuenta con el dato).
+
+##### Distribución turistas atendidos a través de los <br> días de la semana
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+acc <- data.table(accidentes)
+turi_acc <- acc[,sum(turistasat), by = dias]
+setnames(turi_acc,c("dias","turistas_atendidos"))
+ggplot(data = turi_acc, aes(x = dias, y = turistas_atendidos)) +
+geom_bar(stat = "identity", fill = "#6200EA") +
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())
+
+```
+
+##### Distribución de incidentes a través <br> de los días de la semana
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 7}
+incidente <- as.factor(accidentes$servicio)
+ggplot(data = accidentes, aes(x = dias, fill = incidente)) +
+geom_histogram()+
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())+
+	  scale_fill_manual(name = "Patrullas",
+	  values = c("#0D47A1","#4527A0","#6200EA","#9E9E9E",
+	  "#212121"),
+	  labels = c("Asistencia Mec.",
+	  "Accidente", "Información Tur.",
+	  "Arrastre", "Primeros Aux."))
+```
+
+##### Distribución turistas atendidos a través de la <br> hora del día
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+acc <- data.table(accidentes)
+turi_acc <- acc[,sum(turistasat), by = hora]
+setnames(turi_acc,c("hora","turistas_atendidos"))
+ggplot(data = turi_acc, aes(x = hora, y = turistas_atendidos)) +
+geom_bar(stat = "identity", fill = "#6200EA") +
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())
+```
+
+##### Distribución de incidentes a través <br> de la hora del día
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+incidente <- as.factor(accidentes$servicio)
+ggplot(data = accidentes, aes(x = hora, fill = incidente)) +
+geom_histogram()+
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())+
+	  scale_fill_manual(name = "Patrullas",
+	  values = c("#0D47A1","#4527A0","#6200EA","#9E9E9E",
+	  "#212121"),
+	  labels = c("Asistencia Mec.",
+	  "Accidente", "Información Tur.",
+	  "Arrastre", "Primeros Aux."))
+```
+
+##### Distribución turistas atendidos a través de la hora del día sobre todos <br> los días de la semana
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+acc <- data.table(accidentes)
+turi_acc <- acc[,sum(turistasat), by = c("hora","dias")]
+setnames(turi_acc,c("hora","dias","turistas_atendidos"))
+ggplot(data = turi_acc, aes(x = hora, y = turistas_atendidos)) +
+geom_bar(stat = "identity", fill = "#6200EA") + facet_wrap(~dias) +
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())
+```
+
+##### Distribución de incidentes a través  de la hora del día sobre todos <br> los días de la semana
+
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+incidente <- as.factor(accidentes$servicio)
+ggplot(data = accidentes, aes(x = hora, fill = incidente)) +
+geom_histogram() + facet_wrap(~dias)+
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())+
+	  scale_fill_manual(name = "Patrullas",
+	  values = c("#0D47A1","#4527A0","#6200EA","#9E9E9E",
+	  "#212121"),
+	  labels = c("Asistencia Mec.",
+	  "Accidente", "Información Tur.",
+	  "Arrastre", "Primeros Aux."))
+```
+
+##### Distribución geográfica incidentes por día
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+road.map      <- get_map(location = "Ensenada", zoom = 9, maptype = "roadmap")
+road.map.plot <- ggmap(road.map)
+incidente <- as.factor(accidentes$servicio)
+road.map.plot +
+geom_point(data = accidentes, aes(x = longitud_geo,
+y = latitud_geo, col = incidente)) +
+facet_wrap(~dias)+
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())+
+	  scale_colour_manual(name = "Patrullas",
+	  values = c("#311B92","#4527A0","#6200EA","#9E9E9E",
+	  "#212121"),
+	  labels = c("Asistencia Mec.",
+	  "Accidente", "Información Tur.",
+	  "Arrastre", "Primeros Aux."))
+```
+
+##### Distribución geográfica *gravedad* accidentes por día
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+road.map      <- get_map(location = "Ensenada", zoom = 9, maptype = "roadmap")
+road.map.plot <- ggmap(road.map)
+incidente <- as.factor(accidentes$servicio)
+road.map.plot +
+geom_point(data = accidentes, aes(x = longitud_geo,
+y = latitud_geo, col = turistasat)) +
+facet_wrap(~dias)+
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())
+```
+Las gráficas que se acaban de mostrar tienen el fin de explorar si existe un factor temporal que afecte el número de accidentes y la gravedad de los mismos. Esto servirá para predecir y alocar recursos. Dado que no hay manera de conocer el resto de las variables a priori, no las utilizaremos para la elaboración del modelo de predicción.
+
+##### Trayectorias recorridos
+
+Para cubrir esta autopista, se cuenta con ocho patrullas. Las rutas que realizan varían con respecto al día de la semana y se muestran a continuación.
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+patrullas <- as.factor(recorridos$patrulla)
+recorridos$dias      <- as.factor(weekdays(recorridos$tiempo))
+road.map.plot +
+geom_point(data = recorridos, aes(x = long, y = lat, col = patrullas)) +
+facet_wrap(~dias)+
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank()) +
+	  scale_colour_manual(name = "Patrullas",
+	  values = c("#311B92","#4527A0","#283593","#1A237E","#1565C0","#0D47A1","#9E9E9E",
+	  "#212121"),
+	  labels = c("8588", "8592", "8603", "8606", "8608", "8609", "8654", "8924" ))
+```
+
+### Modelo de predicción
+
+Dado lo observado en el análisis exploratorio, hay dos posibles caminos a seguir. A saber:
+
+- Segmentar el territorio de interés en celdas. De tal forma que el problema se enfoque en predecir la probabilidad de que un incidente suceda en una celda determinada en lugar de una coordendada específica. La celda puede ser elegida con base a uniformidad, importancia y características de velocidad de respuesta con las que cuenten las patrullas.
+
+- Utilizar las coordenadas específicas para predecir los incidentes.
+
+La ventaja del primer enfoque es que vuelve los resultados mucho más intuitivos y dado el número de datos resultados mucho más precisos. La desventaja es el seso que introducimos al forzar una categorización a los datos sobre la muestra de entrenamiento.
+
+### Algoritmo de asignación

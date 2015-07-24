@@ -1,0 +1,10 @@
+## Funciones para llevar a cabo tareas básicas de manipulación
+## con los datos de las carreteras.
+## Librerías utilizadas
+library(foreign)
+library(sp)
+library(rgdal)
+library(maptools)
+library(shapefiles)
+## Lectura de shapefile
+shp <- readOGR("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/")

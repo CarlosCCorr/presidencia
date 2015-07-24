@@ -181,3 +181,24 @@ in_time_acc <- accidentes[accidentes$fecha <= max(recorridos$tiempo) &
 in_time_acc <- filter(in_time_acc, servicio == "Accidente")
 #### Prueba distancia más corta
 k_vecinos_accidentes <- k_near_accident(in_time_acc, recorridos)
+
+#### Prueba distancia más corta para diferentes lapsos de tiempo.
+## Esto captura mucho más las dinámicas y da más información
+## para tomar mejores decisiones.
+## 1 hora, 5 horas, 1 día, 5 días
+intervalo <- c(3600, 18e3, 86.4e3, 43.2e4, 86.4e4)
+results <- list()
+for(i in 1:length(intervalo)){
+    results[[i]] <- k_near_accident(in_time_acc,
+                                    recorridos,
+                                    intervalo = intervalo[i])
+}
+
+first_iter <- results[[1]]
+
+first_iter_csv <- ldply(first_iter,function(t)t <- t)
+
+first_iter_csv$fecha_accidente <- in_time_acc$fecha
+first_iter_csv$lon_accidente   <- in_time_acc$longitud_geo
+first_iter_csv$lat_accidente   <- in_time_acc$latitud_geo
+first_iter_csv$num_afectados   <- in_time_acc$turistasat
