@@ -10,6 +10,7 @@ library(shapefiles)
 library(proj4)
 library(geosphere)
 library(mapproj)
+library(FNN)
 ## Lectura de shapefile
 ## shp <- readOGR("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/","Cobertura_Carretera_CSTAV_2014")
 ### Obtención de coordenadas
@@ -17,7 +18,7 @@ library(mapproj)
 ## las lineas que definen cada tramo de la
 ## carretara están dentro de lines
 ## las coordenadas de cada linea estan en Lines@coords
-##
+#########
 ## ejemplo:
 ## Número de carreteras
 ## nrow(shp)
@@ -31,6 +32,7 @@ library(mapproj)
 ## +y_0=0 +ellps=GRS80 +units=m +no_defs
 ##coords.tot <- list()
 ##carretera  <- list()
+##########
 ##for(i in 1:nrow(shp)){
 ##    ## Obtenemos total de lineas que constituyen
 ##    ## la carretera.
@@ -59,10 +61,25 @@ library(mapproj)
 #################################Funciones################################
 ##########################################################################
 ## Lectura de datos
+## Datos recorridos
+recorridos <- read.csv("../../../angeles_verdes/data/recorridos.csv",
+                       stringsAsFactors = FALSE)
+recorridos$tiempo <- as.POSIXct(recorridos$tiempo)
+## Datos de las carreteras
 coords <- read.csv("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/road_coords.csv", stringsAsFactors = FALSE)
-p <- c(-99.1710295,19.4052998)
+## Datos de tráfico
+aforo <- read.csv("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/aforo.csv", stringsAsFactors = FALSE)
+## Datos de accidentes 
+accident <- read.csv("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/base_hora_clean.csv", stringsAsFactors = FALSE)
+## Datos limpios y agregados carreteras
+tij_ens <- read.csv("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/tij_ens.csv", stringsAsFactors = FALSE)
+accident$fecha <- as.POSIXct(accident$fecha)
+accident <- accident[accident$fecha <= max(recorridos$tiempo) &
+                         accident$fecha >= min(recorridos$tiempo),]
+## Tijuana Ensenada (punto 4)
+##tij_ens <- dplyr::filter(coords, carretera == "Ensenada-Tijuana")
 ##----------------------------
-## asigna_camino
+## asigna_camino (punto 1)
 ##----------------------------
 ## dado un punto, le asigna la carretera
 ## a la cual pertenece (la más cercana)
@@ -80,7 +97,7 @@ asigna_camino <- function(p){
                nearest_lat = near[,2])
 }
 ##----------------------------
-## curvatura
+## curvatura (punto 2)
 ##----------------------------
 ## dado un punto, le asigna la carretera
 ## a la cual pertenece (la más cercana)
@@ -97,4 +114,40 @@ curvatura <- function(p){
     angle
 }
 
-curvature <- apply(coords[,1:2],1,curvatura)
+##----------------------------
+## asignar accidentes (punto 3)
+##----------------------------
+asign_acc <- function(tij_ens_coords, accident_coord, TOL = 300){
+    near <- apply(tij_ens_coords,1, function(t)t <- distCosine(t, accident_coord))
+    sum(near < TOL)
+}
+
+asign_acc_n <- function(tij_ens_coords, accidents_coords, TOL = 300){
+    apply(accidents_coords, 1, function(t)t <- asign_acc(tij_ens_coords, t, TOL))
+}
+n_acc     <- asign_acc_n(accident[,11:10], tij_ens[,1:2])
+tij_ens$acc_cerca <- n_acc
+##----------------------------
+## asignar circulación (tij_ens, accidente)
+##----------------------------
+## Correr k-nearest neighbors
+## Tij-Ens
+set.seed(123454321)
+train <- aforo[,1:2]
+test  <- tij_ens[,2:1]
+y     <- aforo[,3]
+names(test) <- c("latitude","longitude")
+knn_tij <- knn.reg(train = train,test = test,y = y,"cover_tree", k = 3)
+tij_ens$circ_diaria <- knn_tij$pred
+## Accidentes
+train <- aforo[,1:2]
+test  <- accident[,10:11]
+y     <- aforo[,3]
+names(test) <- c("latitude","longitude")
+knn_acc <- knn.reg(train = train,test = test,y = y,"cover_tree", k = 3)
+accident$circ_diaria <- knn_acc$pred
+##---------------------------
+## pruebas
+##---------------------------
+
+

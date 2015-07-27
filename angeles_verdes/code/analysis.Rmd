@@ -42,9 +42,8 @@ br{
 
 El objetivo de este documento es ajustar un modelo de predicción a los datos sobre los accidentes y servicios que **Ángeles Verdes** registra en la carretera *Ensenada - Tijuana*. Una vez hecho esto, se implementará un algoritmo de asignación que permita aprovechar los recursos de manera más eficiente y propicie la cobertura de un mayor número de accidentes.
 
-### Metodología
 
-#### Análisis exploratorio
+### Análisis exploratorio
 
 ```{R, echo = FALSE, message = FALSE}
 ## Librerías utilizadas
@@ -57,19 +56,23 @@ library(plyr)
 library(data.table)
 
 ## Lectura de datos
+## Carretera
+tij_ens <- read.csv("../../../angeles_verdes/data/data_entregable/tij_ens.csv",
+		    stringsAsFactors = FALSE)
+## Recorridos
 recorridos <- read.csv("../../../angeles_verdes/data/recorridos.csv",
 		       stringsAsFactors = FALSE)
 recorridos$tiempo <- as.POSIXct(recorridos$tiempo)
 
 ## Accidentes
-accidentes_tot <- read.csv("../../../angeles_verdes/data/base_hora_clean.csv", stringsAsFactors = FALSE)
+accidentes_tot <- read.csv("../../../angeles_verdes/data/in_time_service.csv", stringsAsFactors = FALSE)
 accidentes_tot$fecha <- as.POSIXct(accidentes_tot$fecha)
-accidentes <- accidentes_tot[accidentes_tot$fecha <= max(recorridos$tiempo) &
-			      accidentes_tot$fecha >= min(recorridos$tiempo),]
-
+accidentes <- accidentes_tot
 ```
 
-Se llevará a cabo un análisis explorartorio de las variables asociadas a los accidentes y de servicios que **Ángeles Verdes** presta a los usuarios de la autopista  *Ensenada - Tijuana*. Así como de las rutas y recorridos que las unidades realizan en la zona. Cabe mencionar que la base de datos de accidentes contiene datos que se encuentran en el intervalo temporal **[2014-01-01 01:01:0 - 2014-08-31 20:21:00]** mientras que la muestra de recorridos contempla datos en el intervalo **[2014-05-22 08:22:34 - 2014-12-31 20:32:36]**. Por lo tanto se procederá a hacer el análisis exploratorio y a entrenar el algoritmo en los datos que se encuentran en ambos intervalos y a llevar a cabo la prueba de los resultados con los datos no contenidos en los recorridos. Es necesario tomar en consideración que los resultados aquí expuestos no están ajustados por volumen de viajes llevados a cabo por día de la semana (ya que no se cuenta con el dato).
+Se llevará a cabo un análisis exploratorio de las variables asociadas a los accidentes y de servicios que **Ángeles Verdes** presta a los usuarios de la autopista  *Ensenada - Tijuana*. Así como de las rutas y recorridos que las unidades realizan en la zona. Cabe mencionar que la base de datos de accidentes contiene datos que se encuentran en el intervalo temporal **[2014-01-01 01:01:0 - 2014-08-31 20:21:00]** mientras que la muestra de recorridos contempla datos en el intervalo **[2014-05-22 08:22:34 - 2014-12-31 20:32:36]**. Por lo tanto se procederá a hacer el análisis exploratorio y a entrenar el algoritmo en los datos que se encuentran en ambos intervalos y a llevar a cabo la prueba de los resultados con los datos no contenidos en los recorridos. Es necesario tomar en consideración que los resultados aquí expuestos no están ajustados por volumen de viajes llevados a cabo por día de la semana (ya que no se cuenta con el dato).
+
+#### Accidentes
 
 ##### Distribución turistas atendidos a través de los <br> días de la semana
 
@@ -165,13 +168,15 @@ theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank
 
 ##### Distribución geográfica incidentes por día
 
+Para que los mapa tenga significado, es necesario ponderar el número de accidentes ocurridos por la circulación diaria en ese mismo lugar. La metodología que se utilizó para asignar el número de coches que circulan por cada tramo de la carretera se puede revisar en el Anexo I.
+
 ```{R, echo = FALSE, message = FALSE, warning = FALSE}
 road.map      <- get_map(location = "Ensenada", zoom = 9, maptype = "roadmap")
 road.map.plot <- ggmap(road.map)
 incidente <- as.factor(accidentes$servicio)
 road.map.plot +
 geom_point(data = accidentes, aes(x = longitud_geo,
-y = latitud_geo, col = incidente)) +
+y = latitud_geo, col = incidente, size = circ_diaria)) +
 facet_wrap(~dias)+
 theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
 	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
@@ -187,12 +192,10 @@ theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank
 ##### Distribución geográfica *gravedad* accidentes por día
 
 ```{R, echo = FALSE, message = FALSE, warning = FALSE}
-road.map      <- get_map(location = "Ensenada", zoom = 9, maptype = "roadmap")
-road.map.plot <- ggmap(road.map)
 incidente <- as.factor(accidentes$servicio)
 road.map.plot +
 geom_point(data = accidentes, aes(x = longitud_geo,
-y = latitud_geo, col = turistasat)) +
+y = latitud_geo, col = turistasat, size = circ_diaria)) +
 facet_wrap(~dias)+
 theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
 	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
@@ -200,7 +203,43 @@ theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank
 ```
 Las gráficas que se acaban de mostrar tienen el fin de explorar si existe un factor temporal que afecte el número de accidentes y la gravedad de los mismos. Esto servirá para predecir y alocar recursos. Dado que no hay manera de conocer el resto de las variables a priori, no las utilizaremos para la elaboración del modelo de predicción.
 
-##### Trayectorias recorridos
+#### Carretera
+
+Ahora bien, ya que tenemos la caracterización del fenómeno de accidentes, exploararemos las condiciones de la carretera para ver si la curvatura de las mismas está correlacionada con el número de accidentes. La metodología que se utilizó para asignar la curvatura a cada tramo de la carretera se puede revisar en el Anexo II.
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = tij_ens, aes(x = prop_acc,
+y = curv)) + geom_point(colour = "#6200EA",position = "jitter" ) +
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())
+```
+
+Es clara la presencia de dos datos *aberrantes* en donde la proporción de accidentes dada la circulación del lugar es bastante elevado. Sin embargo, no se aprecia ninguna correlación con la curvatura de la carretera.
+
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = filter(tij_ens,prop_acc < .002), aes(x = prop_acc,
+y = curv)) + geom_point(colour = "#6200EA",position = "jitter" ) +
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())
+```
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+road.map.plot +
+geom_point(data = tij_ens, aes(x = lon,
+y = lat, col = prop_acc, size = curv)) +
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())+
+	  scale_colour_gradient(limits=c(0, .8), low ="#6200EA", high = "#1A237E",trans = "sqrt")+
+	  scale_size(range = c(0, 5))
+```
+
+#### Trayectorias recorridos
+
+### Trayectorias por patrulla
 
 Para cubrir esta autopista, se cuenta con ocho patrullas. Las rutas que realizan varían con respecto al día de la semana y se muestran a continuación.
 
@@ -223,10 +262,21 @@ theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank
 
 Dado lo observado en el análisis exploratorio, hay dos posibles caminos a seguir. A saber:
 
-- Segmentar el territorio de interés en celdas. De tal forma que el problema se enfoque en predecir la probabilidad de que un incidente suceda en una celda determinada en lugar de una coordendada específica. La celda puede ser elegida con base a uniformidad, importancia y características de velocidad de respuesta con las que cuenten las patrullas.
+- Segmentar el territorio de interés en celdas. De tal forma que el problema se enfoque en predecir la probabilidad de que un incidente suceda en una celda determinada en lugar de una coordenada específica. La celda puede ser elegida con base a uniformidad, importancia y características de velocidad de respuesta con las que cuentan las patrullas.
 
 - Utilizar las coordenadas específicas para predecir los incidentes.
 
 La ventaja del primer enfoque es que vuelve los resultados mucho más intuitivos y dado el número de datos resultados mucho más precisos. La desventaja es el seso que introducimos al forzar una categorización a los datos sobre la muestra de entrenamiento.
 
 ### Algoritmo de asignación
+
+
+### Anexo I
+
+Para obtener los datos de circulación promedio diaria por punto de carretera se utilizaron los datos de --datos-- y se utilizó un modelo de predicción (k vecinos más cercanos (k = 3)) para determinar el número de individuos que circulan en las coordenadas no contenidas dentro de la base.
+
+### Anexo II
+
+Para determinar el grado de curvatura se utilizó la fórmula para determinar ángulos entre dos coordenadas geográficas.
+
+$\theta = atan2(sin\Delta\lambda cos\phi_2, cos\phi_1 sin\phi_2 - sin\phi_1 cos\phi_2 cos \Delta\lambda)$
