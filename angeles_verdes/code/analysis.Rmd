@@ -57,15 +57,15 @@ library(data.table)
 
 ## Lectura de datos
 ## Carretera
-tij_ens <- read.csv("../../../angeles_verdes/data/data_entregable/tij_ens.csv",
+tij_ens <- read.csv("../../angeles_verdes/data/data_entregable/tij_ens.csv",
 		    stringsAsFactors = FALSE)
 ## Recorridos
-recorridos <- read.csv("../../../angeles_verdes/data/recorridos.csv",
+recorridos <- read.csv("../../angeles_verdes/data/recorridos.csv",
 		       stringsAsFactors = FALSE)
 recorridos$tiempo <- as.POSIXct(recorridos$tiempo)
 
 ## Accidentes
-accidentes_tot <- read.csv("../../../angeles_verdes/data/in_time_service.csv", stringsAsFactors = FALSE)
+accidentes_tot <- read.csv("../../angeles_verdes/data/in_time_service.csv", stringsAsFactors = FALSE)
 accidentes_tot$fecha <- as.POSIXct(accidentes_tot$fecha)
 accidentes <- accidentes_tot
 ```
@@ -217,14 +217,31 @@ theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank
 
 Es clara la presencia de dos datos *aberrantes* en donde la proporción de accidentes dada la circulación del lugar es bastante elevado. Sin embargo, no se aprecia ninguna correlación con la curvatura de la carretera.
 
+Explorando más a fondo los datos *aberrantes* observamos que en uno hay un grado alto de curvatura mientras que en el otro parace ser recto. Viendo esto en un mapa observamos lo siguiente
 
 ```{R, echo = FALSE, message = FALSE, warning = FALSE}
-ggplot(data = filter(tij_ens,prop_acc < .002), aes(x = prop_acc,
+outliers <- dplyr::filter(tij_ens, prop_acc > .01)
+road.map      <- get_map(location = "31.98838,-116.7458", zoom = 14, maptype = "roadmap")
+road.map.plot <- ggmap(road.map)
+road.map.plot +
+geom_point(data = outliers, aes(x = lon,
+y = lat, col = prop_acc), size = 3) +
+theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+	  panel.background = element_blank())+
+	  scale_colour_gradient(limits=c(0, .8), low ="#6200EA", high = "#1A237E",trans = "sqrt")
+```
+
+Eliminando los datos *aberrantes* y ceros
+
+```{R, echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = filter(tij_ens,prop_acc < .002 & prop_acc > 0), aes(x = prop_acc,
 y = curv)) + geom_point(colour = "#6200EA",position = "jitter" ) +
 theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
 	  title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
 	  panel.background = element_blank())
 ```
+
 
 ```{R, echo = FALSE, message = FALSE, warning = FALSE}
 road.map.plot +

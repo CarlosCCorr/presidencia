@@ -11,6 +11,7 @@ library(proj4)
 library(geosphere)
 library(mapproj)
 library(FNN)
+library(ggmap)
 ## Lectura de shapefile
 ## shp <- readOGR("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/","Cobertura_Carretera_CSTAV_2014")
 ### Obtención de coordenadas
@@ -61,6 +62,9 @@ library(FNN)
 #################################Funciones################################
 ##########################################################################
 ## Lectura de datos
+## Datos oficiales accidentes
+accidentes_tot<- read.csv("../../../angeles_verdes/data/angels_clean.csv",
+                          stringsAsFactors = FALSE)
 ## Datos recorridos
 recorridos <- read.csv("../../../angeles_verdes/data/recorridos.csv",
                        stringsAsFactors = FALSE)
@@ -90,7 +94,8 @@ asigna_camino <- function(p){
     dist  <- data.frame(lon=d_lon,lat=d_lat)
     dist  <- apply(dist,1,max)
     near  <- head(coords[order(dist),],3)
-    dist  <- distCosine(near[,1:2],p)
+    dist  <- apply(near[,1:2], 1,function(t)t <-
+        distCosine(as.numeric(t),as.numeric(p)))
     data.frame(carretera = near[,3],
                dist = dist/1000,
                nearest_lon = near[,1],
@@ -125,29 +130,45 @@ asign_acc <- function(tij_ens_coords, accident_coord, TOL = 300){
 asign_acc_n <- function(tij_ens_coords, accidents_coords, TOL = 300){
     apply(accidents_coords, 1, function(t)t <- asign_acc(tij_ens_coords, t, TOL))
 }
-n_acc     <- asign_acc_n(accident[,11:10], tij_ens[,1:2])
-tij_ens$acc_cerca <- n_acc
-##----------------------------
-## asignar circulación (tij_ens, accidente)
-##----------------------------
-## Correr k-nearest neighbors
-## Tij-Ens
-set.seed(123454321)
-train <- aforo[,1:2]
-test  <- tij_ens[,2:1]
-y     <- aforo[,3]
-names(test) <- c("latitude","longitude")
-knn_tij <- knn.reg(train = train,test = test,y = y,"cover_tree", k = 3)
-tij_ens$circ_diaria <- knn_tij$pred
-## Accidentes
-train <- aforo[,1:2]
-test  <- accident[,10:11]
-y     <- aforo[,3]
-names(test) <- c("latitude","longitude")
-knn_acc <- knn.reg(train = train,test = test,y = y,"cover_tree", k = 3)
-accident$circ_diaria <- knn_acc$pred
-##---------------------------
+##n_acc     <- asign_acc_n(accident[,11:10], tij_ens[,1:2])
+##tij_ens$acc_cerca <- n_acc
+####----------------------------
+#### asignar circulación (tij_ens, accidente)
+####----------------------------
+#### Correr k-nearest neighbors
+#### Tij-Ens
+##set.seed(123454321)
+##train <- aforo[,1:2]
+##test  <- tij_ens[,2:1]
+##y     <- aforo[,3]
+##names(test) <- c("latitude","longitude")
+##knn_tij <- knn.reg(train = train,test = test,y = y,"cover_tree", k = 3)
+##tij_ens$circ_diaria <- knn_tij$pred
+#### Accidentes
+##train <- aforo[,1:2]
+##test  <- accident[,10:11]
+##y     <- aforo[,3]
+##names(test) <- c("latitude","longitude")
+##knn_acc <- knn.reg(train = train,test = test,y = y,"cover_tree", k = 3)
+##accident$circ_diaria <- knn_acc$pred
+####---------------------------
 ## pruebas
 ##---------------------------
+## Estudio de Outliers
+##outliers <- dplyr::filter(tij_ens, prop_acc > .003)
+##road.map      <- get_map(location = "31.98838,-116.7458", zoom = 13, maptype = "roadmap")
+##road.map.plot <- ggmap(road.map)
+##road.map.plot + geom_point(data = outliers, aes(x = lon, y = lat),
+##                           col = "#6200EA" ) +
+##theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
+##      title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+##      panel.background = element_blank())
+####----------------------------
+## Prueba con datos oficiales
+##----------------------------
+acc_in_zone <- dplyr::filter(accidentes_tot, Nom_Ent == "Baja California")
+unique(acc_in_zone$Nom_Ent)
+coords_acc_in_zone <- acc_in_zone[,22:23]
+
 
 
