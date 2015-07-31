@@ -43,9 +43,6 @@ plot_road     <- road.map.plot +
     geom_point(data = carreteras, aes(x = lon,
                    y = lat), alpha = .5, size = .8)
 ## Capa de curvas
-plot_curv     <- road.map.plot +
-    geom_point(data = carr_curv, aes(x = lon,
-                   y = lat, size = curvatura))
 ##---------------------------------------------------------------
 ## ¿Cuáles son las carreteras más problemáticas?
 ## (Mayor número de incidentes proporcional a la circulación)
@@ -112,9 +109,43 @@ multiplot(plot_prop_acc, plot_prop_grav, cols = 2)
 ##  de incidentes o la gravedad de los mismos?
 query_3 <- "select prop_acc, curvatura, lat, lon, carretera from (select count(*)/avg(circ) as prop_acc, abs(avg(curv)) as curvatura, tramo from accident group by tramo order by prop_acc desc) as query, carreteras where carretera = tramo;"
 prop_inci_curv <- dbGetQuery(con, query_3)
+plot_curv     <- road.map.plot +
+    geom_point(data = prop_inci_curv,
+               aes(x = lon,
+                   y = lat,
+                   col = curvatura,
+                   size = prop_acc))+
+        theme(axis.text =
+                  element_text(colour = "#6200EA"),
+              axis.title.y =
+                  element_blank(),
+              axis.title.x =
+                  element_blank(),
+              title =
+                  element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+              panel.background =
+                  element_blank()) +
+            scale_colour_gradient("curvatura",
+                                  low="#6200EA") +
+scale_size("proporción de \n incidentes",range = c(1,3))
 ## ¿Afecta el número de intersecciones, o la presencia
 ##  de las mismas?
 ## ¿Existe una componente temporal?
+query_4 <- "select count(*) as accidentes, extract(month from fecha) as mes, tramo from accident group by mes, tramo order by  mes, accidentes desc;"
+month_acc_road <- dbGetQuery(con, query_4)
+ggplot(data = month_acc_road, aes(x = mes, y = tramo, size = accidentes)) +
+    geom_point(color = "#00E5FF")+
+        theme(axis.text =
+                  element_text(colour = "#6200EA"),
+              axis.text.y = element_text(size = 3.5),
+              axis.title.y =
+                  element_blank(),
+              axis.title.x =
+                  element_blank(),
+              title =
+                  element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+              panel.background =
+                  element_blank())
 ## ¿Existe una componente temporal espacial?
 ##------------------------------
 ## Estudio de recorridos

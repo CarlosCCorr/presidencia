@@ -15,7 +15,9 @@ library(FNN)
 library(ggmap)
 library(RecordLinkage)
 library(tidyr)
+library(caret)
 library(RPostgreSQL)
+library(data.table)
 ## Lectura de shapefile
 ## shp <- readOGR("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/","Cobertura_Carretera_CSTAV_2014")
 ### Obtención de coordenadas
@@ -255,3 +257,19 @@ test_2$latitude  <- extract_numeric(test_2$latitude)
 y     <- aforo[,3]
 knn_acc       <- knn.reg(train = train, test = test_2,y = y,"cover_tree", k = 3)
 ac_clean$circ_diaria <- knn_acc$pred
+###
+#####
+### Curvatura a toda la carretera
+#####
+set.seed(123454321)
+trainIndex <- createDataPartition(coords$carretera, p = .01,
+                                  list = FALSE,
+                                  times = 5)
+## Aquí hacer un loop
+coords_samp <- coords[trainIndex[,1],][,1:2]
+curv_coords <- apply(coords_samp,1,function(t)t <- curvatura(t))
+roads <- coords[trainIndex[,1],3]
+roads <- data.table(road = roads,
+                curv = curv_coords) 
+curv_roads <- roads[,abs(mean(curv)), by=road.road]
+#write.csv(curv_roads, "/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/general_analysis/curv_roads.csv", row.names=FALSE)
