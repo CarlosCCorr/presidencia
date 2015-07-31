@@ -6,12 +6,16 @@ library(foreign)
 library(sp)
 library(rgdal)
 library(maptools)
+library(lubridate)
 library(shapefiles)
 library(proj4)
 library(geosphere)
 library(mapproj)
 library(FNN)
 library(ggmap)
+library(RecordLinkage)
+library(tidyr)
+library(RPostgreSQL)
 ## Lectura de shapefile
 ## shp <- readOGR("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/","Cobertura_Carretera_CSTAV_2014")
 ### Obtención de coordenadas
@@ -63,8 +67,14 @@ library(ggmap)
 ##########################################################################
 ## Lectura de datos
 ## Datos oficiales accidentes
+## Esto es para llevar a cabo el análisis anterior con
+## el total de los datos. Más adelante, nos limitaremos a la tempor
+## alidad de los accidentes. Hay q separar también los datos con
+## los que contamos con fecha
 accidentes_tot<- read.csv("../../../angeles_verdes/data/angels_clean.csv",
                           stringsAsFactors = FALSE)
+## date <- as.Date(accidentes_tot$FechaServi)
+## date <- as.POSIXct(date)
 ## Datos recorridos
 recorridos <- read.csv("../../../angeles_verdes/data/recorridos.csv",
                        stringsAsFactors = FALSE)
@@ -118,7 +128,20 @@ curvatura <- function(p){
                       )
     angle
 }
-
+##----------------------------
+## Identificar intersecciones
+##----------------------------
+## dado un punto, le asigna la carretera
+## a la cual pertenece (la más cercana)
+## p= punto en formato longitud, latitud
+intersect <- function(coords){
+    key <- paste0(coords[,1],coords[,2])
+    duplicated(key)
+}
+## determinemos que puntos de
+## la carretera tij_en son intersecciones
+## inter <- intersect(tij_ens[,1:2])
+## inter <- intersect(coords)
 ##----------------------------
 ## asignar accidentes (punto 3)
 ##----------------------------
@@ -130,8 +153,14 @@ asign_acc <- function(tij_ens_coords, accident_coord, TOL = 300){
 asign_acc_n <- function(tij_ens_coords, accidents_coords, TOL = 300){
     apply(accidents_coords, 1, function(t)t <- asign_acc(tij_ens_coords, t, TOL))
 }
-##n_acc     <- asign_acc_n(accident[,11:10], tij_ens[,1:2])
-##tij_ens$acc_cerca <- n_acc
+## asignar accidentes con hora
+## n_acc     <- asign_acc_n(accident[,11:10], tij_ens[,1:2])
+## tij_ens$acc_cerca <- n_acc
+## asignar accidentes oficiales
+test_1 <- test_1[,2:1]
+test_2 <- test_2[,2:1]
+n_acc     <- asign_acc_n(test_2, test_1)
+tij_ens$acc_cerca <- n_acc
 ####----------------------------
 #### asignar circulación (tij_ens, accidente)
 ####----------------------------
@@ -145,30 +174,84 @@ asign_acc_n <- function(tij_ens_coords, accidents_coords, TOL = 300){
 ##knn_tij <- knn.reg(train = train,test = test,y = y,"cover_tree", k = 3)
 ##tij_ens$circ_diaria <- knn_tij$pred
 #### Accidentes
+##acc_in_zone <- dplyr::filter(naccidentes_tot, Nom_Ent == "Baja California")
 ##train <- aforo[,1:2]
-##test  <- accident[,10:11]
+##test  <- acc_in_zone[,23:22]
+##test$longitude <- extract_numeric(test$longitude)
+##test$latitude <- extract_numeric(test$latitude)
 ##y     <- aforo[,3]
 ##names(test) <- c("latitude","longitude")
-##knn_acc <- knn.reg(train = train,test = test,y = y,"cover_tree", k = 3)
-##accident$circ_diaria <- knn_acc$pred
+##knn_acc <- knn.reg(train = train, test = test,y = y,"cover_tree", k = 3)
+##acc_in_zone$circ_diaria <- knn_acc$pred
 ####---------------------------
 ## pruebas
 ##---------------------------
 ## Estudio de Outliers
 ##outliers <- dplyr::filter(tij_ens, prop_acc > .003)
-##road.map      <- get_map(location = "31.98838,-116.7458", zoom = 13, maptype = "roadmap")
+##road.map      <- get_map(location = "Mexico", zoom = 5, maptype = "roadmap")
 ##road.map.plot <- ggmap(road.map)
 ##road.map.plot + geom_point(data = outliers, aes(x = lon, y = lat),
 ##                           col = "#6200EA" ) +
 ##theme(axis.text = element_text(colour = "#6200EA"), axis.title.y = element_blank(), axis.title.x = element_blank(),
 ##      title = element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
 ##      panel.background = element_blank())
-####----------------------------
+##----------------------------
 ## Prueba con datos oficiales
 ##----------------------------
-acc_in_zone <- dplyr::filter(accidentes_tot, Nom_Ent == "Baja California")
-unique(acc_in_zone$Nom_Ent)
-coords_acc_in_zone <- acc_in_zone[,22:23]
-
-
-
+##coords_acc_in_zone <- acc_in_zone[,22:23]
+##curvature_acc <- apply(coords_acc_in_zone,1,curvatura)
+##acc_in_zone$curv <- curvature_acc
+####----------------------------
+## encontrar intersecciones en carreteras.
+###----------------------------
+##  key <- paste0(coords[,1],coords[,2])
+##coords$inter <- duplicated(key)
+##road.map.plot + geom_point(data = coords, aes(x = lon, y = lat, col = inter)) 
+##----------------------------------------------------
+##----------------------------------------------------
+##----------------------------------------------------
+## A partir de esta sección se realiza análisis general
+## para las carreteras con las que se cuenta con información.
+## las consultas a las bases de datos se harán via PostgreSQL
+##drv <- dbDriver("PostgreSQL")
+## creando connexión
+##con <- dbConnect(drv, dbname="angeles_verdes", user="lgarcia")
+## Tramos
+## TE_PV, TI_EN, TE_MA, IR_LE, ME_QE
+##tramo <- "TE_PV"
+##query <- paste0("SELECT * FROM all_data WHERE tramo like '",
+##tramo,
+##"'")
+##db    <- dbGetQuery(con, query)
+##----------------- Asignar caminos a accidentes
+## Lectura de datos
+acc <- read.csv("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/general_analysis/accidents.csv", stringsAsFactors = FALSE)
+acc_coords <- accident[,c(11,10)]
+tramo <- apply(acc_coords, 1, function(t) t <- asigna_camino(t)[1,1])
+## Estructuración
+## ac_clean
+## obtener columnas relevantes
+ac_clean <- accident[,c(1,3,7,11,10,14)]
+## obtener intersecciones
+ac_clean$inter <- intersect(ac_clean[,4:5])
+## obtener curvatura
+curv <- apply(acc_coords, 1, function(t) t <- curvatura(t) )
+ac_clean$curv <- curv
+## obtener tránsito
+train  <- aforo[,1:2]
+## coords
+test_1 <- coords[,2:1]
+names(test_1) <- c("latitude","longitude")
+test_1$longitude <- extract_numeric(test_1$longitude)
+test_1$latitude  <- extract_numeric(test_1$latitude)
+y     <- aforo[,3]
+knn_acc       <- knn.reg(train = train, test = test_1,y = y,"cover_tree", k = 2)
+coords$circ_diaria <- knn_acc$pred
+## accidentes
+test_2 <- ac_clean[,5:4]
+names(test_2) <- c("latitude","longitude")
+test_2$longitude <- extract_numeric(test_2$longitude)
+test_2$latitude  <- extract_numeric(test_2$latitude)
+y     <- aforo[,3]
+knn_acc       <- knn.reg(train = train, test = test_2,y = y,"cover_tree", k = 3)
+ac_clean$circ_diaria <- knn_acc$pred
