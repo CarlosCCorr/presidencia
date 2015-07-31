@@ -33,7 +33,7 @@ con <- dbConnect(drv, dbname="angeles_verdes", user="lgarcia")
 ## Cargamos datos de carreteras.
 query_carr <- "select * from carreteras;"
 carreteras <- dbGetQuery(con, query_carr)
-query_curv <- query_3 <- "select curvatura, lat, lon, carretera from (select abs(avg(curv)) as curvatura, tramo from accident group by tramo order by curvatura desc) as query, carreteras where carretera = tramo;"
+query_curv <- "select carretera, lat, lon, curv from carreteras, curv where carretera = tramo;"
 carr_curv      <- dbGetQuery(con,query_curv)
 ## Mapa base
 road.map      <- get_map(location = "Mexico", zoom = 5, maptype = "roadmap")
@@ -43,6 +43,9 @@ plot_road     <- road.map.plot +
     geom_point(data = carreteras, aes(x = lon,
                    y = lat), alpha = .5, size = .8)
 ## Capa de curvas
+plot_curv     <- road.map.plot +
+    geom_point(data = carr_curv, aes(x = lon,
+                   y = lat, size = curv, col = curv), alpha = .5, size = .8)
 ##---------------------------------------------------------------
 ## ¿Cuáles son las carreteras más problemáticas?
 ## (Mayor número de incidentes proporcional a la circulación)
