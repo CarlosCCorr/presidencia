@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Proyecto:Angeles Verdes</title>
+    <style>
+h1 {
+        color:#4c2f79;
+         text-align: justify;
+}
+h2 {
+        color:#4c2f79;
+         text-align: justify;
+}
+h3 {
+        color:#757575;
+        text-align: justify;
+}
+h4{
+        color:#757575;
+        text-align: justify;
+}
+h5{
+        color:#4c2f79;
+        text-align: justify;
+        font-weight:900;
+}
+h6{
+        color:#C51162;
+        text-align: justify;
+}
+div {
+        text-align:justify;
+        text-justify:inter-word;
+}
+hr{
+        border-width:4px;
+        color:#1A237E;
+}
+p{
+    color:#212121;
+}
+br{
+        line-height:100%;
+}
+body{
+    margin: 0 auto;
+    font-family: Georgia, Palatino, serif;
+    color: #444444;
+    line-height: 1;
+    max-width: 860px;
+    padding: 30px;
+    margin-left: 24px;
+}
+code {
+    font-family: Consolas, Monaco, Andale Mono, monospace;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+aside {
+    display: block;
+    float: right;
+    width: 390px;
+}
+p, ul, ol {
+    font-size: 16px;
+    line-height: 24px;
+    max-width: 540px;
+    text-align: justify;
+}
+a:link {
+    color: #4c2f79;
+}
+hr {
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 1px;
+}
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #4c2f79;
+  stroke-opacity: .6;
+}
+.boxed {
+  border: 1px solid #9E9E9E ;
+  background-color: #EEEEEE;
+}
+emphy{
+   color: #4c2f79;
+   font-weight:900;
+}
+
+</style>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="http://latex.codecogs.com/latexit.js"></script>
+</head>
+<body>
+<h1>Análisis estadístico, predictivo y modelado<br> de incidentes, carreteras y recorridos</h1>
+<hr>
+<h3>Introducción</h3>
+<p>En este proyecto implementamos un flujo de trabajo de <emphy>análisis de datos</emphy> que involucra diversos procesos. El contenido podría resumirse en tres etapas básicas. Estas son:</p>
+<ol>
+    <li>Obtención y procesaimento de datos</li>
+    <li>Análisis exploratorio y visualización</li>
+    <li>Análisis predictivo</li>
+    <li>Modelo de asignación</li>
+</ol>
+
+<p>A lo largo de todas las etapas se utilizaron diversas herramientas tanto <emphy>estadísticas</emphy> como <emphy>computacionales</emphy> para llevar a cabo el almacenamiento y explotación de datos de la manera más <emphy>eficiente</emphy> posible. Los lenguajes de programación que se utilizaron en las diversas etapas del proceso son los siguientes:</p>
+
+<ol>
+  <li><strong>Procesamiento</strong> R, bash.
+  <li><strong>Almacenamiento</strong> PostgreSQL.
+  <li><strong>Explotación</strong> R.
+  <li><strong>Visualización</strong> R, JavaScript.    
+</ol>
+
+<hr>
+<h3>Obtención y procesamiento de datos</h3>
+
+<p>Los datos que se utilizarón en este análisis provienen de cuatro fuentes distintas, y se refieren a cuatro fenómenos distintos. Por un lado se utilizó la base de <a href="http://www3.inegi.org.mx/sistemas/biblioteca/ficha.aspx?upc=702825278724">Red Nacional de Caminos</a> para explorar las características intrínsecas de cada carretera sin importar si hubo o no un incidente. Dichas características involucran longitud del trayecto o curvatura. A continuación se utilizó la base <a href="http://busca.datos.gob.mx/#/conjuntos/servicios-de-auxilio-turistico-de-la-corporacion-angeles-verdes">Servicios de Auxílio Turístico de la Corporación Ángeles Verdes</a> para identificar las variables con las cuales se asocian los distintos incidentes que ocurren a lo largo de las carreteras que cubre la corporación <emphy>Ángeles Verdes</emphy> esta base involucra variables más específicias como tipo de servicio prestado, número de turistas atendidos, estado de procedencia, velocidad máxima permitida en la autopista, tipo de vegetación, clima, etc. Además de esto se utilizó la base de <a href="http://www.sct.gob.mx/fileadmin/DireccionesGrales/DGST/Datos-Viales-2014/40_ESTACIONES_PERMANENTES.pdf">Tránsito Promedio Diario Anual</a> para ponderar las observaciones por el número de automóviles circulando en cada autopista y de esta manera evitar resultados espuerios debidos a la <emphy>alta correlación</emphy> entre número de accidentes y número total de coches circulando. Finalmente se utilizó una base de datos con los registros de los recorridos diarios por parte de las unidades de <emphy>Ángeles Verdes</emphy> comprendiendo el periodo de <emphy>2014-05-22 08:22:34</emphy> a <emphy>2014-12-31 22:43:53</emphy> y las rutas <emphy>Tepic - Puerto Vallarta, Tijuana - Ensenada, Tepic - Mazatlan, México - Querétaro e Irapuato - León</emphy></p>
+
+<h4>Incorporación de datos de circulación, curvatura e intersecciones</h4>
+
+<p>Cómo se mencionó en la sección anterior, es de fundamental importancia ponderar el número de observaciones de incidentes por el número de automóviles que circulan por dicha zona. Para esto se utilizó la base de <a href="http://www.sct.gob.mx/fileadmin/DireccionesGrales/DGST/Datos-Viales-2014/40_ESTACIONES_PERMANENTES.pdf">Tránsito Promedio Diario Anual</a>, la primera dificultad que se observa es que dicha base no contiene todas las coordenadas de todas las carreteras utilizadas en el análisis. La interrogante inmediata es ¿Cómo asignar a cada punto la circulación diaria promedio? Para resolver esta cuestión, utilizamos un algoritmo de predicción conocido como k vecinos más cercanos o (knn) por sus siglas en inglés para asignar la circulación de cada punto tomando como referencia la circulación promedio de los k (3 en este caso) puntos más cercanos.</p>
+
+
+<strong><h5>Mapa de circulación promedio diaria</h5></strong>
+
+<iframe src="circ.html" width="595" height="380" style="border:none"></iframe>
+
+
+<p>Ahora bien, después de llevar a cabo un análisis exploratorio preliminar sobre el fenómeno de los incidentes automovilísticos, se encontró que gran parte de estos ocurren en intersecciones de caminos, además de esto parece razonable suponer que la curvatura de las carreteras es otra variable que pudiera ser de utilidad para la predicción de los mismos. En vista de esto, se incorporó a la base de datos un <emph>proxy</emph> de la curvatura de una carretera y una variable binaria que indica si dicha carretera está o no en una intersección</p>
+
+<p> Como <emph>proxy</emph> para la curvatura de un punto utilizamos el ángulo que este forma con entre el siguiente punto y el inmediato anterior esto lo llevamos a cabo utilizando la siguiente fórmula: <div lang="latex">\theta = atan2(sin\Delta\lambda cos\phi_2, cos\phi_1 sin\phi_2 - sin\phi_1 cos\phi_2 cos \Delta\lambda)</div>
+  <br>
+La razón por la cual esta fórmula funciona es muy intuitiva.
+</p>
+
+<strong><h5>Mapa de curvatura promedio</h5></strong>
+
+<iframe src="curv_chart.html" width="595" height="380" style="border:none"></iframe>
+
+<p>Para verificar que esta manera de medir curvatura tiene sentido, veamos un punto que muestra como con alta curvatura y uno con baja.</p>
+
+<strong><h5>Mapa de punto con alta curvatura</h5></strong>
+
+<iframe src="curvy_zoom.html" width="595" height="380" style="border:none"></iframe>
+
+<strong><h5>Mapa de punto con baja curvatura</h5></strong>
+
+<iframe src="flaty_zoom.html" width="595" height="380" style="border:none"></iframe>
+
+<h3>Análisis exploratorio y visualización</h3>
+
+<p>Esta sección se divide en dos, en primera instancia, tenemos el análisis de la base de accidentes y por otro el de la base de recorridos.
+
+  El objetivo del análisis exploratorio de la base de accidentes es identificar que variables pueden ser útiles para caracterizar este fenómeno, de tal forma que sean utilizadas para la elaboración de un algoritmo de predicción más preciso y parsimonioso.
+
+Por otra parte, el análisis que se llevará a cabo en la base de datos de recorridos tiene como finalidad identificar el patrón de patrullaje que se lleva a cabo hoy en día y estudiar como se comporta este en comparación con la dinámica de incidentes.
+</p>
+
+<h4>Accidentes</h4>
+
+<h4>Recorridos</h4>
+
+<h3>Análisis predictivo</h3>
+<h3>Modelo de asignación</h3>
+
+</body>
+</html>
+
+

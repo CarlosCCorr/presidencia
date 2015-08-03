@@ -138,17 +138,17 @@ query_4 <- "select count(*) as accidentes, extract(month from fecha) as mes, tra
 month_acc_road <- dbGetQuery(con, query_4)
 ggplot(data = month_acc_road, aes(x = mes, y = tramo, size = accidentes)) +
     geom_point(color = "#00E5FF")+
-        theme(axis.text =
-                  element_text(colour = "#6200EA"),
-              axis.text.y = element_text(size = 3.5),
-              axis.title.y =
-                  element_blank(),
-              axis.title.x =
-                  element_blank(),
-              title =
-                  element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
-              panel.background =
-                  element_blank())
+theme(axis.text =
+          element_text(colour = "#6200EA"),
+      axis.text.y = element_text(size = 3.5),
+      axis.title.y =
+          element_blank(),
+      axis.title.x =
+          element_blank(),
+      title =
+          element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
+      panel.background =
+          element_blank())
 ## ¿Existe una componente temporal espacial?
 ##------------------------------
 ## Estudio de recorridos
