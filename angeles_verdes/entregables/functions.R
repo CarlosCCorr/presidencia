@@ -19,6 +19,7 @@ library(caret)
 library(RPostgreSQL)
 library(data.table)
 library(googleVis)
+library(rCharts)
 ## Lectura de shapefile
 ## shp <- readOGR("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/","Cobertura_Carretera_CSTAV_2014")
 ### Obtención de coordenadas
@@ -93,6 +94,8 @@ tij_ens <- read.csv("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_v
 accident$fecha <- as.POSIXct(accident$fecha)
 accident <- accident[accident$fecha <= max(recorridos$tiempo) &
                          accident$fecha >= min(recorridos$tiempo),]
+## Datos limipios de accidente con hora
+acc_time <- read.csv("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/general_analysis/accidents_time.csv", stringsAsFactors = FALSE)
 ## Tijuana Ensenada (punto 4)
 ##tij_ens <- dplyr::filter(coords, carretera == "Ensenada-Tijuana")
 ##----------------------------
@@ -180,12 +183,12 @@ tij_ens$acc_cerca <- n_acc
 ##acc_in_zone <- dplyr::filter(naccidentes_tot, Nom_Ent == "Baja California")
 
 train <- aforo[,1:2]
-test  <- accidentes_tot[,23:22]
+test  <- acc_time[,5:4]
 names(test) <- c("latitude","longitude")
 test$longitude <- extract_numeric(test$longitude)
 test$latitude <- extract_numeric(test$latitude)
 y     <- aforo[,3]
-knn_acc <- knn.reg(train = train, test = test,y = y,"cover_tree", k = 1)
+knn_acc <- knn.reg(train = train, test = test,y = y,"cover_tree", k = 3)
 ##acc_in_zone$circ_diaria <- knn_acc$pred
 ####---------------------------
 ## pruebas
@@ -275,7 +278,7 @@ accidentes <- ggplot(data = test,
                                            element_text(size = 15, colour = "#6200EA", vjust = 0.7 ),
                                        panel.background =
                                            element_blank())
-                               
+
 circ_prom <- ggplot(data = aforo,
                     aes(x = longitude,
                         y = latitude,
@@ -328,9 +331,9 @@ coords_samp <- coords[trainIndex[,1],][,1:2]
 curv_coords <- apply(coords_samp,1,function(t)t <- curvatura(t))
 roads <- coords[trainIndex[,1],3]
 roads <- data.table(road = roads,
-                curv = curv_coords) 
+                    curv = curv_coords) 
 curv_roads <- roads[,abs(mean(curv)), by=road.road]
-#write.csv(curv_roads, "/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/general_analysis/curv_roads.csv", row.names=FALSE)
+                                        #write.csv(curv_roads, "/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/general_analysis/curv_roads.csv", row.names=FALSE)
 ###----------------------------------------------------------
 ###----------------------------------------------------------
 ###-------------------------------------------Visualizaciones
@@ -356,3 +359,69 @@ G <- gvisGeoChart(curv_data_samp, locationvar = "loc",
                       colorAxis="{colors:['#6200EA', 'red', '#00CC99', '#757575']}",
                       backgroundColor="lightblue"), chartid="curv")
 plot(G)
+## Zoom curvy
+mapcurv <- Leaflet$new()
+mapcurv$setView(extract_numeric(as.character(curvy[1,3:4])),
+                zoom = 14)
+mapcurv$marker(extract_numeric(as.character(curvy[1,3:4])),
+               bindPopup = paste0("<p> Curvatura: ",curvy[1,1],"</p>"))
+mapcurv
+mapcurv$save('curvy_zoom.html',cdn=TRUE)
+## circulación
+set.seed(123454321)
+aforo$loc <- paste(aforo$latitude, aforo$longitude, sep=":")
+samp <- sample(nrow(aforo), 400)
+aforo_samp <- aforo[samp,]
+circ <-  gvisGeoChart(aforo_samp, locationvar="loc", 
+                      colorvar="number",
+                      sizevar = NULL,
+                      options=list(
+                          colorAxis="{colors:['#6200EA', 'red', '#00CC99', '#757575']}",
+                          region="MX",
+                          backgroundColor="lightblue"),chartid="circ")
+plot(circ)
+## Análisis exploratorio datos de accidentes.
+##set.seed(123454321)
+##sample <- sample(nrow(acc_time),100)
+##data_plot <- acc_time[sample,]
+date      <- as.Date(acc_time$fecha)
+date_acc  <- count(date)
+data_plot <- data.table(acc_time)
+data_plot$fecha <- as.Date(acc_time$fecha)
+## Calendarios
+cal_plot <- gvisCalendar(date_acc, datevar = "x",
+                         numvar = "freq",
+                         options=list(colors="['#D1C4E9', '#5E35B1', '#6200EA']",
+                             width="1000px", height="200px"))
+plot(cal_plot)
+
+## Serie de tiempo
+series_data <- data_plot[,list(circ = mean(circ), curv = max(curv), acc = log(.N), turis = log(mean(turistasat))), by = "fecha,tramo"]
+chart <- gvisMotionChart(series_data, "tramo", "fecha",
+                         options = list(width = 500, height = 350,
+                             colorAxis="{colors: ['lightblue', '#6200EA']}"))
+
+## gráfico intersección
+inter_data <- data_plot[, log(.N), by="servicio,tramo,inter"]
+prop_inter <- sum(inter_data$inter)/nrow(inter_data)
+inter_data$V1[inter_data$inter == TRUE] <- inter_data$V1[inter_data$inter == TRUE]/prop_inter
+inter_data$V1[inter_data$inter == FALSE] <- inter_data$V1[inter_data$inter == FALSE]/(1-prop_inter)
+
+n1 <- nPlot(V1 ~ servicio, group = "inter", data = inter_data, 
+            type = 'multiBarChart')
+n1$save('hist_inter_service.html',cdn=TRUE)
+## Cruce de variables
+bubble_data <- data_plot[,list(curva = mean(curv), acc = log(.N), turis = mean(turistasat)),by=tramo]
+bubble4 <- gvisBubbleChart(bubble_data,
+                           idvar="tramo",
+                           xvar="curva",
+                           yvar="acc",
+                           sizevar="turis",
+                           options=list(
+                               vAxes="[{viewWindowMode:'explicit',viewWindow:{min:-2, max:10}}]",
+                               hAxes="[{viewWindowMode:'explicit',viewWindow:{min:-1, max:4}}]",
+                               width="650px", height="450px",
+                               colorAxis="{colors: ['lightblue', '#6200EA']}"))
+plot(bubble4)
+
+## Gráfficas por hora.

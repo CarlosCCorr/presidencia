@@ -1,0 +1,323 @@
+"dia","tramo","inter","N"
+"Friday","Ensenada-Tijuana",FALSE,45
+"Friday","Mexicali-La Rumorosa",FALSE,36
+"Friday","San Felipe-La Venta",FALSE,26
+"Friday","Ensenada-Punta Colonet",FALSE,4
+"Friday","Ensenada-Tijuana",TRUE,26
+"Friday","San Quintín-Guayaquil",FALSE,1
+"Friday","Tijuana-La Rumorosa",FALSE,22
+"Friday","Tijuana-Ensenada",FALSE,2
+"Friday","San Felipe-La Venta",TRUE,21
+"Friday","Mexicali-La Rumorosa",TRUE,27
+"Friday","Ensenada-Ruta del Vino",FALSE,3
+"Friday","La Paz-Buenavista",FALSE,1
+"Friday","Uruapan-Cuatro_Caminos",FALSE,1
+"Friday","Tepic-Entronque Rosamorada",FALSE,3
+"Friday","Mazatlán-El Palmito Libre",FALSE,1
+"Friday","Obregón-Guaymas",FALSE,6
+"Friday","Caborca-Santa Ana",FALSE,3
+"Friday","Mexicali-La Venta",FALSE,16
+"Friday","Guerrero Negro-Rancho Chapala",FALSE,2
+"Friday","Loreto-Constitución",FALSE,1
+"Friday","Puerto Peñasco-Los Vidrios",FALSE,3
+"Friday","San Luis Río Colorado-Los Vidrios",FALSE,8
+"Friday","Tijuana-La Rumorosa",TRUE,2
+"Friday","Ensenada-Héroes de la Independencia",TRUE,4
+"Friday","Tecate-La Rumorosa",FALSE,5
+"Friday","Obregón-Estación Masiaca",FALSE,2
+"Friday","Hermosillo-Santa Ana",FALSE,7
+"Friday","Hermosillo-Guaymas",FALSE,4
+"Friday","Morelia-Encuandureo",FALSE,1
+"Friday","Caborca-Sonoyta",FALSE,6
+"Friday","Gómez Palacio-Caseta Ceballos",FALSE,1
+"Friday","Tlajomulco-Tapalpa",FALSE,1
+"Friday","Entronque La Cruz-Mazatlán",FALSE,3
+"Friday","Entronque La Cruz-Mazatlán",TRUE,3
+"Friday","Guadalajara-Ixtlán del Río",FALSE,1
+"Friday","Guanajuato-Entronque Lagos de Moreno",FALSE,1
+"Friday","Oaxaca-Tepelmeme",FALSE,1
+"Friday","La Paz-Entronque El Pescadero",FALSE,2
+"Friday","Tepic-Rosamorada Libre",FALSE,1
+"Friday","Aguascalientes-Tepatitlán",FALSE,1
+"Friday","San Luis Río Colorado-Los Vidrios",TRUE,1
+"Friday","Cuautla-Atlixco-Puebla",FALSE,1
+"Friday","Mazatlán-La Concha Autopista",TRUE,2
+"Friday","La Paz-Entronque El Pescadero",TRUE,1
+"Monday","Ensenada-Punta Colonet",FALSE,6
+"Monday","Tijuana-Ensenada",FALSE,9
+"Monday","Ensenada-Tijuana",FALSE,36
+"Monday","Tijuana-La Rumorosa",FALSE,13
+"Monday","Ensenada-Ruta del Vino",FALSE,5
+"Monday","San Felipe-La Venta",FALSE,15
+"Monday","Ensenada-Tijuana",TRUE,22
+"Monday","Mexicali-La Rumorosa",FALSE,18
+"Monday","San Luis Río Colorado-Los Vidrios",FALSE,5
+"Monday","La Paz-Entronque El Pescadero",FALSE,2
+"Monday","Caborca-Sonoyta",FALSE,7
+"Monday","Mexicali-La Venta",FALSE,9
+"Monday","Ensenada-Ruta del Vino",TRUE,2
+"Monday","San Felipe-La Venta",TRUE,16
+"Monday","Mexicali-La Rumorosa",TRUE,12
+"Monday","La Paz-Buenavista",FALSE,2
+"Monday","San Jose del Cabo- El pescadero",FALSE,2
+"Monday","Toluca-México Libre",FALSE,1
+"Monday","Mazatlán-La Concha Autopista",FALSE,1
+"Monday","Ensenada-Héroes de la Independencia",FALSE,1
+"Monday","Santa Rosalia-Limite Municipal Loreto",FALSE,1
+"Monday","Loreto-Constitución",FALSE,1
+"Monday","Tepic-Entronque Rosamorada",FALSE,1
+"Monday","Puerto Peñasco-Los Vidrios",FALSE,3
+"Monday","Guerrero Negro-Rancho Chapala",FALSE,3
+"Monday","Obregón-Estación Masiaca",FALSE,2
+"Monday","Hermosillo-Guaymas",FALSE,4
+"Monday","Tijuana-Ensenada",TRUE,1
+"Monday","Mazatlán-El Palmito Libre",FALSE,1
+"Monday","Caborca-Santa Ana",FALSE,5
+"Monday","Hermosillo-Santa Ana",FALSE,5
+"Monday","San Luis Río Colorado-Los Vidrios",TRUE,1
+"Monday","Loreto-Mulegé",FALSE,1
+"Monday","Tecate-La Rumorosa",FALSE,1
+"Monday","Ensenada-Punta Colonet",TRUE,1
+"Monday","Entronque La Cruz-Mazatlán",FALSE,2
+"Monday","Mazatlán-La Concha Autopista",TRUE,1
+"Monday","Caborca-Sonoyta",TRUE,1
+"Monday","Obregón-Guaymas",FALSE,2
+"Monday","Aguascalientes-Tepatitlán",FALSE,1
+"Monday","Guerrero Negro-Rancho Chapala",TRUE,1
+"Monday","México-Caseta Francisco Velasco",FALSE,1
+"Monday","Tepic-Entronque Rosamorada",TRUE,1
+"Monday","Uruapan-Cuatro_Caminos",FALSE,1
+"Monday","Hermosillo-Guaymas",TRUE,1
+"Monday","Obregón-Guaymas",TRUE,1
+"Saturday","Ensenada-Tijuana",FALSE,62
+"Saturday","Tijuana-Ensenada",FALSE,12
+"Saturday","Tijuana-La Rumorosa",FALSE,23
+"Saturday","Mexicali-La Rumorosa",FALSE,50
+"Saturday","Ensenada-Tijuana",TRUE,37
+"Saturday","Ensenada-Ruta del Vino",FALSE,12
+"Saturday","Mexicali-La Venta",FALSE,25
+"Saturday","San Felipe-La Venta",TRUE,43
+"Saturday","San Luis Río Colorado-Los Vidrios",FALSE,3
+"Saturday","Mexicali-La Rumorosa",TRUE,39
+"Saturday","San Felipe-La Venta",FALSE,24
+"Saturday","Santa Rosalía-Guerrero Negro",FALSE,2
+"Saturday","Culiacán-Guasave-Los Mochis",FALSE,2
+"Saturday","Puerto Peñasco-Los Vidrios",FALSE,2
+"Saturday","Tijuana-La Rumorosa",TRUE,2
+"Saturday","Ensenada-Punta Colonet",FALSE,1
+"Saturday","Loreto-Mulegé",FALSE,2
+"Saturday","La Paz-Constitución",FALSE,2
+"Saturday","La Paz-Entronque El Pescadero",FALSE,2
+"Saturday","Saltillo-Libramiento Norponiente",FALSE,1
+"Saturday","Mazatlán-El Palmito Libre",FALSE,2
+"Saturday","Tecate-La Rumorosa",FALSE,4
+"Saturday","San Jose del Cabo- El pescadero",FALSE,2
+"Saturday","Morelia-Celaya",FALSE,1
+"Saturday","Morelia-Caseta_Contepec",FALSE,1
+"Saturday","Morelia-Entronque_Uruapan",FALSE,1
+"Saturday","Hermosillo-Santa Ana",FALSE,4
+"Saturday","Hermosillo-Guaymas",FALSE,5
+"Saturday","Tecate-La Rumorosa",TRUE,2
+"Saturday","Tepic-Ixtlan del Río",FALSE,2
+"Saturday","Mazatlán-El Espinal",FALSE,1
+"Saturday","Mazatlán-La Concha Autopista",FALSE,1
+"Saturday","Guerrero Negro-Rancho Chapala",FALSE,3
+"Saturday","Entronque La Cruz-Mazatlán",FALSE,4
+"Saturday","Obregón-Guaymas",FALSE,5
+"Saturday","Caborca-Santa Ana",FALSE,4
+"Saturday","Caborca-Sonoyta",TRUE,2
+"Saturday","Ensenada-Ruta del Vino",TRUE,1
+"Saturday","Ensenada-Héroes de la Independencia",TRUE,3
+"Saturday","Manzanillo-Ciudad Guzmán",FALSE,1
+"Saturday","Tlajomulco-Ocotlán-Periférico-Tala",FALSE,1
+"Saturday","Guadalajara-Ixtlán del Río",FALSE,1
+"Saturday","Tepic-Entronque Rosamorada",FALSE,1
+"Saturday","Mazatlán-La Concha Libre",FALSE,1
+"Saturday","Entronque La Cruz-Mazatlán",TRUE,3
+"Saturday","Caborca-Sonoyta",FALSE,8
+"Saturday","Obregón-Estación Masiaca",FALSE,2
+"Saturday","Toluca-Atlacomulco",FALSE,1
+"Saturday","Mazatlán-La Concha Autopista",TRUE,1
+"Saturday","Durango-Puente Baluarte",FALSE,1
+"Sunday","Ensenada-Tijuana",FALSE,60
+"Sunday","Ensenada-Tijuana",TRUE,56
+"Sunday","Mexicali-La Rumorosa",FALSE,46
+"Sunday","Ensenada-Ruta del Vino",FALSE,8
+"Sunday","San Luis Río Colorado-Los Vidrios",FALSE,12
+"Sunday","Tijuana-La Rumorosa",FALSE,21
+"Sunday","San Felipe-La Venta",TRUE,31
+"Sunday","Mexicali-La Venta",FALSE,21
+"Sunday","Tecate-La Rumorosa",FALSE,8
+"Sunday","San Felipe-La Venta",FALSE,19
+"Sunday","Ensenada-Punta Colonet",FALSE,4
+"Sunday","Loreto-Mulegé",FALSE,2
+"Sunday","Loreto-Constitución",FALSE,4
+"Sunday","La Paz-Entronque El Pescadero",FALSE,2
+"Sunday","Guanajuato-Apaseo El Grande",FALSE,2
+"Sunday","Tlajomulco-Tapalpa",FALSE,1
+"Sunday","Tepic-Entronque Rosamorada",FALSE,6
+"Sunday","Mazatlán-La Concha Autopista",FALSE,2
+"Sunday","Hermosillo-Guaymas",FALSE,8
+"Sunday","Hermosillo-Santa Ana",FALSE,2
+"Sunday","Tijuana-Ensenada",FALSE,19
+"Sunday","Mexicali-La Venta",TRUE,1
+"Sunday","Gómez Palacio-Caseta Yerbaniz",FALSE,3
+"Sunday","Guadalajara-San Juan de los Lagos",FALSE,1
+"Sunday","Tepic-Ixtlan del Río",FALSE,2
+"Sunday","Oaxaca-Tepelmeme",FALSE,1
+"Sunday","Entronque La Cruz-Mazatlán",FALSE,7
+"Sunday","Obregón-Guaymas",FALSE,2
+"Sunday","Ensenada-Ruta del Vino",TRUE,3
+"Sunday","Mexicali-La Rumorosa",TRUE,35
+"Sunday","La Paz-Constitución",FALSE,4
+"Sunday","San Jose del Cabo- El pescadero",FALSE,1
+"Sunday","Saltillo-Paila",FALSE,1
+"Sunday","Zacatecas-Fresnillo-Las Palmas",FALSE,1
+"Sunday","La Paz-Playas",FALSE,3
+"Sunday","Caborca-Santa Ana",FALSE,3
+"Sunday","Morelia-Encuandureo",FALSE,1
+"Sunday","Guanajuato-Entronque Lagos de Moreno",FALSE,2
+"Sunday","Ensenada-Héroes de la Independencia",TRUE,2
+"Sunday","Tijuana-La Rumorosa",TRUE,1
+"Sunday","Durango-Puente Baluarte",FALSE,1
+"Sunday","Guanajuato-Apaseo El Grande",TRUE,1
+"Sunday","Caborca-Sonoyta",FALSE,7
+"Sunday","Tecate-La Rumorosa",TRUE,2
+"Sunday","Morelia-Celaya",FALSE,1
+"Sunday","Mazatlán-El Palmito Autopista",FALSE,1
+"Sunday","Nogales-Santa Ana",FALSE,1
+"Sunday","Guadalajara-Ixtlán del Río",FALSE,1
+"Sunday","Guerrero Negro-Rancho Chapala",FALSE,4
+"Sunday","Campeche-Sabancuy",FALSE,1
+"Sunday","Tlajomulco-Chapala-Aeropuerto",FALSE,1
+"Sunday","Uruapan-Cuatro_Caminos",FALSE,1
+"Sunday","Caborca-Santa Ana",TRUE,1
+"Sunday","Loreto-Mulegé",TRUE,1
+"Sunday","Puerto Ángel-El Coyul",FALSE,1
+"Sunday","Tepic-Entronque Rosamorada",TRUE,1
+"Sunday","Puerto Peñasco-Los Vidrios",FALSE,1
+"Sunday","Obregón-Estación Masiaca",FALSE,2
+"Sunday","Zacatecas-Cosío",FALSE,1
+"Sunday","Puente Mezcala-Caseta Palo Blanco",FALSE,1
+"Sunday","Tijuana-Ensenada",TRUE,1
+"Sunday","México-Lerma",FALSE,1
+"Thursday","Ensenada-Tijuana",FALSE,23
+"Thursday","Mexicali-La Rumorosa",FALSE,25
+"Thursday","Mexicali-La Venta",FALSE,15
+"Thursday","Ensenada-Ruta del Vino",FALSE,3
+"Thursday","San Jose  del Cabo - Buenavista",FALSE,2
+"Thursday","Mexicali-La Rumorosa",TRUE,15
+"Thursday","Ensenada-Tijuana",TRUE,26
+"Thursday","San Felipe-La Venta",FALSE,9
+"Thursday","Tijuana-La Rumorosa",FALSE,19
+"Thursday","Ensenada-Punta Colonet",FALSE,4
+"Thursday","San Felipe-La Venta",TRUE,25
+"Thursday","Tijuana-Ensenada",FALSE,4
+"Thursday","San Luis Río Colorado-Los Vidrios",FALSE,8
+"Thursday","La Paz-Buenavista",FALSE,1
+"Thursday","La Paz-Constitución",FALSE,2
+"Thursday","Santa Rosalía-Guerrero Negro",FALSE,5
+"Thursday","Tepic-Entronque Rosamorada",FALSE,1
+"Thursday","Querértaro-Palmillas",FALSE,1
+"Thursday","Entronque La Cruz-Mazatlán",FALSE,1
+"Thursday","Caborca-Sonoyta",FALSE,9
+"Thursday","Caborca-Santa Ana",FALSE,7
+"Thursday","Hermosillo-Santa Ana",FALSE,2
+"Thursday","Mérida-Chichen Itzá-Valladolid",FALSE,1
+"Thursday","La Paz-Entronque El Pescadero",FALSE,2
+"Thursday","Loreto-Mulegé",FALSE,1
+"Thursday","Mazatlán-El Palmito Libre",FALSE,1
+"Thursday","San Luis Río Colorado-Los Vidrios",TRUE,1
+"Thursday","Ensenada-Ruta del Vino",TRUE,2
+"Thursday","Tepic-Ixtlan del Río",FALSE,2
+"Thursday","Obregón-Estación Masiaca",FALSE,5
+"Thursday","Cancún-Tulum",FALSE,1
+"Thursday","Guerrero Negro-Rancho Chapala",FALSE,2
+"Thursday","Loreto-Constitución",FALSE,1
+"Thursday","Guanajuato-Apaseo El Grande",FALSE,1
+"Thursday","Lazaro_Cardenas-Cuatro_Caminos",FALSE,1
+"Thursday","Tepic-Las Varas-Chapalilla",FALSE,1
+"Thursday","Mazatlán-La Concha Autopista",FALSE,4
+"Thursday","Tecate-La Rumorosa",FALSE,2
+"Thursday","Culiacán-Entronque La Cruz",FALSE,1
+"Thursday","Tepic-Entronque Rosamorada",TRUE,1
+"Thursday","Hermosillo-Guaymas",FALSE,3
+"Thursday","Obregón-Guaymas",FALSE,2
+"Thursday","San Jose del Cabo- El pescadero",FALSE,1
+"Thursday","Mazatlán-El Espinal",FALSE,1
+"Thursday","Tepotzotlán-San_Juan_del_Río",FALSE,1
+"Thursday","Manzanillo-Ciudad Guzmán",FALSE,1
+"Tuesday","Ensenada-Tijuana",FALSE,28
+"Tuesday","Tijuana-La Rumorosa",FALSE,11
+"Tuesday","Mexicali-La Rumorosa",FALSE,19
+"Tuesday","Ensenada-Ruta del Vino",FALSE,3
+"Tuesday","Ensenada-Tijuana",TRUE,27
+"Tuesday","Ensenada-Ruta del Vino",TRUE,2
+"Tuesday","San Felipe-La Venta",FALSE,9
+"Tuesday","San Felipe-La Venta",TRUE,16
+"Tuesday","San Luis Río Colorado-Los Vidrios",FALSE,3
+"Tuesday","Mexicali-La Rumorosa",TRUE,15
+"Tuesday","Mexicali-La Venta",FALSE,12
+"Tuesday","Tijuana-Ensenada",FALSE,4
+"Tuesday","Puerto Vallarta-Las Varas",FALSE,1
+"Tuesday","Guadalajara-Ixtlán del Río",FALSE,1
+"Tuesday","Caborca-Santa Ana",FALSE,4
+"Tuesday","Puerto Peñasco-Los Vidrios",FALSE,2
+"Tuesday","Caborca-Sonoyta",FALSE,5
+"Tuesday","Mexicali-La Venta",TRUE,1
+"Tuesday","Santa Rosalía-Guerrero Negro",FALSE,1
+"Tuesday","Manzanillo-Ciudad Guzmán",FALSE,2
+"Tuesday","Hermosillo-Guaymas",FALSE,3
+"Tuesday","Puerto Peñasco-Los Vidrios",TRUE,1
+"Tuesday","Tecate-La Rumorosa",FALSE,5
+"Tuesday","Guerrero Negro-Rancho Chapala",FALSE,2
+"Tuesday","La Paz-Playas",FALSE,1
+"Tuesday","Obregón-Guaymas",FALSE,4
+"Tuesday","Ensenada-Punta Colonet",FALSE,2
+"Tuesday","Tlaxcala-San Marcos",FALSE,1
+"Tuesday","Saltillo-Parras",FALSE,1
+"Tuesday","Guanajuato-Apaseo El Grande",FALSE,1
+"Tuesday","Hermosillo-Santa Ana",FALSE,3
+"Tuesday","Entronque La Cruz-Mazatlán",TRUE,1
+"Tuesday","Obregón-Estación Masiaca",FALSE,1
+"Tuesday","Tecate-La Rumorosa",TRUE,1
+"Tuesday","Tepotzotlán-San_Juan_del_Río",FALSE,1
+"Wednesday","Ensenada-Tijuana",FALSE,29
+"Wednesday","Tijuana-La Rumorosa",FALSE,12
+"Wednesday","Mexicali-La Rumorosa",FALSE,37
+"Wednesday","Mexicali-La Venta",FALSE,13
+"Wednesday","San Luis Río Colorado-Los Vidrios",FALSE,3
+"Wednesday","Ensenada-Tijuana",TRUE,19
+"Wednesday","San Felipe-La Venta",FALSE,14
+"Wednesday","Tijuana-Ensenada",FALSE,10
+"Wednesday","Tecate-La Rumorosa",FALSE,2
+"Wednesday","Loreto-Mulegé",FALSE,3
+"Wednesday","Puerto Vallarta-Las Varas",FALSE,1
+"Wednesday","Tepic-Entronque Rosamorada",FALSE,2
+"Wednesday","Mazatlán-El Palmito Autopista",FALSE,1
+"Wednesday","Caborca-Sonoyta",FALSE,5
+"Wednesday","Hermosillo-Guaymas",FALSE,1
+"Wednesday","Hermosillo-Santa Ana",FALSE,3
+"Wednesday","Caborca-Santa Ana",FALSE,3
+"Wednesday","San Jose del Cabo- El pescadero",FALSE,2
+"Wednesday","Durango-Puente Baluarte",FALSE,1
+"Wednesday","San Felipe-La Venta",TRUE,19
+"Wednesday","Guerrero Negro-Rancho Chapala",FALSE,4
+"Wednesday","Mexicali-La Rumorosa",TRUE,15
+"Wednesday","Ensenada-Ruta del Vino",FALSE,2
+"Wednesday","Santa Rosalía-Guerrero Negro",FALSE,1
+"Wednesday","Entronque La Cruz-Mazatlán",FALSE,2
+"Wednesday","Obregón-Guaymas",FALSE,3
+"Wednesday","Loreto-Constitución",FALSE,1
+"Wednesday","Guadalajara-San Juan de los Lagos",FALSE,1
+"Wednesday","Culiacán-Entronque La Cruz",FALSE,1
+"Wednesday","Guerrero Negro-Rancho Chapala",TRUE,1
+"Wednesday","La Paz-Constitución",FALSE,2
+"Wednesday","Xalapa-Coatepec-Veracruz",FALSE,1
+"Wednesday","Ensenada-Punta Colonet",FALSE,2
+"Wednesday","Puerto Peñasco-Los Vidrios",FALSE,1
+"Wednesday","Obregón-Estación Masiaca",FALSE,2
+"Wednesday","Tlajomulco-Tapalpa",FALSE,1
+"Wednesday","Mazatlán-El Palmito Libre",FALSE,1
+"Wednesday","Entronque La Cruz-Mazatlán",TRUE,1
+"Wednesday","Durango-Puente Baluarte",TRUE,1

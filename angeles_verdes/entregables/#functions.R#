@@ -19,6 +19,7 @@ library(caret)
 library(RPostgreSQL)
 library(data.table)
 library(googleVis)
+library(rCharts)
 ## Lectura de shapefile
 ## shp <- readOGR("/home/lgarcia/proyectos/presidencia/data_analysis/angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/","Cobertura_Carretera_CSTAV_2014")
 ### Obtención de coordenadas
@@ -387,6 +388,10 @@ date      <- as.Date(acc_time$fecha)
 date_acc  <- count(date)
 data_plot <- data.table(acc_time)
 data_plot$fecha <- as.Date(acc_time$fecha)
+## Preparar datos D3.js
+data_plot$dia  <- weekdays(data_plot$fecha)
+data_d3  <- data_plot[, .N, by = "dia,tramo,inter"]
+data_d3  <- data_d3[order(data_d3$dia),]
 ## Calendarios
 cal_plot <- gvisCalendar(date_acc, datevar = "x",
                          numvar = "freq",
@@ -400,6 +405,15 @@ chart <- gvisMotionChart(series_data, "tramo", "fecha",
                          options = list(width = 500, height = 350,
                              colorAxis="{colors: ['lightblue', '#6200EA']}"))
 
+## gráfico intersección
+inter_data <- data_plot[, log(.N), by="servicio,tramo,inter"]
+prop_inter <- sum(inter_data$inter)/nrow(inter_data)
+inter_data$V1[inter_data$inter == TRUE] <- inter_data$V1[inter_data$inter == TRUE]/prop_inter
+inter_data$V1[inter_data$inter == FALSE] <- inter_data$V1[inter_data$inter == FALSE]/(1-prop_inter)
+
+n1 <- nPlot(V1 ~ servicio, group = "inter", data = inter_data, 
+            type = 'multiBarChart')
+n1$save('hist_inter_service.html',cdn=TRUE)
 ## Cruce de variables
 bubble_data <- data_plot[,list(curva = mean(curv), acc = log(.N), turis = mean(turistasat)),by=tramo]
 bubble4 <- gvisBubbleChart(bubble_data,
@@ -414,3 +428,4 @@ bubble4 <- gvisBubbleChart(bubble_data,
                                colorAxis="{colors: ['lightblue', '#6200EA']}"))
 plot(bubble4)
 
+## Gráfficas por hora.
