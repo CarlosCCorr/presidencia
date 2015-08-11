@@ -5,25 +5,25 @@
 ## Librerías utilizadas
 ##-----------------------------------
 ##-----------------------------------
-library(plyr)
-library(foreign)
-library(sp)
-library(rgdal)
-library(maptools)
-library(lubridate)
-library(shapefiles)
-library(proj4)
-library(geosphere)
-library(mapproj)
-library(FNN)
-library(ggmap)
-library(RecordLinkage)
-library(tidyr)
-library(caret)
-library(RPostgreSQL)
-library(data.table)
-library(googleVis)
-library(rCharts)
+suppressPackageStartupMessages(library(plyr))
+suppressPackageStartupMessages(library(foreign))
+suppressPackageStartupMessages(library(sp))
+suppressPackageStartupMessages(library(rgdal))
+suppressPackageStartupMessages(library(maptools))
+suppressPackageStartupMessages(library(lubridate))
+suppressPackageStartupMessages(library(shapefiles))
+suppressPackageStartupMessages(library(proj4))
+suppressPackageStartupMessages(library(geosphere))
+suppressPackageStartupMessages(library(mapproj))
+suppressPackageStartupMessages(library(FNN))
+suppressPackageStartupMessages(library(ggmap))
+suppressPackageStartupMessages(library(RecordLinkage))
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(caret))
+suppressPackageStartupMessages(library(RPostgreSQL))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(googleVis))
+suppressPackageStartupMessages(library(rCharts))
 ##-----------------------------------
 ##-----------------------------------
 ## Lectura de datos
@@ -31,20 +31,14 @@ library(rCharts)
 ##-----------------------------------
 ## Shapefile de carreteras donde CSTAV tiene cobertura
 ## Notar que la estructura de los shapes puede cambiar.
-shp <- readOGR("../../../angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/",
-               "Cobertura_Carretera_CSTAV_2014")
+##shp <- readOGR("../../../angeles_verdes/data/data_entregable/CSTAV_Cobertura_Carretera-0/CSTAV_Cobertura_Carretera/", "Cobertura_Carretera_CSTAV_2014")
 ## Datos de las carreteras (extraidos del shapefile)
-coords <- read.csv("../../../angeles_verdes/data/data_entregable/road_coords.csv",
-                   stringsAsFactors = FALSE)
+coords <- read.csv("../../../angeles_verdes/data/data_entregable/road_coords.csv", stringsAsFactors = FALSE)
 ## Datos de tráfico
-aforo <- read.csv("../../../angeles_verdes/data/data_entregable/aforo.csv",
-                  stringsAsFactors = FALSE)
-## Datos de accidentes 2014
-acc_1 <- read.csv("../../../angeles_verdes/data/data_time/AV_BD_Servicios_2014.csv",
-                  stringsAsFactors = FALSE)
-## Datos de accidentes 2014
-acc_2 <- read.csv("../../../angeles_verdes/data/data_time/AV_BD_Servicios_2015.csv",
-                  stringsAsFactors = FALSE)
+aforo <- read.csv("../../../angeles_verdes/data/data_entregable/aforo.csv", stringsAsFactors = FALSE)
+## Datos de accidentes 2014 y 2015
+acc   <- read.csv("../../../angeles_verdes/data/data_entregable/acc.csv", stringsAsFactors = FALSE)
+acc$fechaservi <- as.POSIXct(acc$fechaservi)
 ##-----------------------------------
 ##-----------------------------------
 ## Funciones
@@ -142,9 +136,8 @@ asigna_camino <- function(p, coords = coords, k = 3){
 ## y calcula la curvatura tomando en consideración
 ## los 2 puntos más cercanos.
 ## p = punto en formato longitud, latitud
-curvatura <- function(p){
+curvatura <- function(road){
     ## Asigna carretera
-    road     <- asigna_camino(p)
     delt_lon <- road$nearest_lon[1] - road$nearest_lon[3]
     ## Calculamos angulo usando fórmula
     ## θ = atan2(sin(Δlong)*cos(lat2), cos(lat1)*sin(lat2) − sin(lat1)*cos(lat2)*cos(Δlong)
@@ -153,7 +146,11 @@ curvatura <- function(p){
                           sin(road$nearest_lat[1])*cos(road$nearest_lat[3])*
                               cos(delt_lon)
                       )
-    angle
+    abs(angle)
+}
+## list_road = resultado de asigna carretera
+curvatura_tot <- function(list_road){
+    unlist(llply(list_road, function(t)t <- curvatura(t)))
 }
 ##----------------------------
 ## intersect_coords_road (road_coords)
@@ -197,12 +194,12 @@ asign_acc_n <- function(coords, accidents_coords, TOL = 300){
 ##----------------------------
 ## p = coordenadas o vector de coordenadas (lat, lon)
 ## k = número de vecinos a utilizar en la predicción
-asign_circ <- function(p,k,seed){
+asign_circ <- function(p, k, seed){
     set.seed(seed)
-    train <- aforo[,1:2]
+    train <- aforo[, 1:2]
     test  <- p
-    y     <- aforo[,3]
-    names(test) <- c("latitude","longitude")
+    y     <- aforo[, 3]
+    names(test) <- c("latitude", "longitude")
     knn.reg(train = train,
             test = test,
             y = y,
@@ -211,6 +208,21 @@ asign_circ <- function(p,k,seed){
 }
 ##-----------------------------------
 ##-----------------------------------
-## Análisis
+## Construcción de variables
 ##-----------------------------------
 ##-----------------------------------
+## Asignar circulación a los accidentes.
+circ       <- asign_circ(acc[, 8:7], 3, "123454321")
+acc$circma <- circ
+## Asignar carretera.
+carr <- apply(acc[ ,7:8],
+              1,
+              function(t)t <-
+                  asigna_camino(t, coords))
+name_carr <-unlist( llply(carr,function(t)t <- t[1,1]))
+acc$carr <- name_carr
+## Asignar curvatura a los accidentes.
+curv <- curvatura_tot(carr)
+## Guardar resultados
+write.csv(acc,
+          "../../../angeles_verdes/data/data_entregable/acc.csv", row.names = FALSE)
