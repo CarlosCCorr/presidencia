@@ -5,6 +5,7 @@ suppressPackageStartupMessages(library(RJSONIO))
 suppressPackageStartupMessages(library(RCurl))
 suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(streamR))
 ## ---------------------------------------
 ## ---------------------------------------
 ## Coordenadas de interés.
@@ -79,24 +80,32 @@ setup_twitter_oauth(consumer_key,
                     consumer_secret,
                     access_token,
                     access_token_secret)
-## Búsqueda no georeferenciados
-data.tweet <- searchTwitter("Jeffrey Sachs",
-                            n = 500)
+
+data.tweet <- searchTwitter("JaimeRdzNL",
+                           n = 15000)
+##                           geocode='25.657394, -100.295553, 100mi')
+
+## Convertir a data.frame
 data.frame.tweet   <- twListToDF(data.tweet)
+
+## Escribir resultados
 write.csv(data.frame.tweet,
           './data/queryTweet.csv',
           row.names = FALSE)
+
 ############################################################
+## Twitter Jalisco
 ############################################################
-############################################################
-## Prueba speakers
-speakers <- read.csv("./data/speakers.csv",
-                     stringsAsFactors = FALSE)
-## Tweets generales
-get.tweet.df <- function(search, tweets){
-    data.tweet <- searchTwitter(search,
-                                n = tweets)
-    twListToDF(data.tweet)[,text]
-}
-## lista de tweets generales de cada individuo
-get.tweet.df(speakers$Speaker,20)
+library(ROAuth)
+requestURL <- "https://api.twitter.com/oauth/request_token"
+accessURL <- "https://api.twitter.com/oauth/access_token"
+authURL <- "https://api.twitter.com/oauth/authorize"
+my_oauth <- OAuthFactory$new(consumerKey=consumer_key,
+consumerSecret=consumer_secret, requestURL=requestURL,
+accessURL=accessURL, authURL=authURL)
+my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))
+
+filterStream(file="tweets_jal.json",
+             locations=c( -105.847962, 18.385231,  -103.105679, 21.950384),
+             track="Patricia",oauth=my_oauth)
+
