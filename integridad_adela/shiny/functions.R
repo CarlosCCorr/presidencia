@@ -204,11 +204,12 @@ transform.entity <- function(entity, bag_entities = entities){
     ## OUT
     ## variable booleana que identifica a las columnas que sobrepasan thresh.
     ## bolsa de entidades
+
     off_entities <- tolower(unlist(bag_entities))
     ## Obtener la entidad que se parece más
     most_like <- most_simil_mult(tolower(entity), off_entities)$char
     ## Obtener índice
-    clave <- names(bag_entities)[laply(bag_entities, function(t){ t <- most_like %in% t})]
+    clave <- names(bag_entities)[laply(bag_entities, function(t){ t <- most_like %in% tolower(t)})]
     list("clave" = clave, "Entidad" = bag_entities[clave][[1]][1])
 }
 
