@@ -98,18 +98,18 @@ date_base <- seq(as.Date("1980-01-01"),
 ##---------------------------------
 ###################################################
 transform_month <- function(month){
-    bag_months <- list( "01"=c("Enero", "ene."),
-                       "02"=c("Febrero", "feb."),
-                       "03"=c("Marzo", "mar."),
-                       "04"=c("Abril", "abr."),
-                       "05"=c("Mayo", "may."),
-                       "06"=c("Junio", "jun."),
-                       "07"=c("Julio", "jul."),
-                       "08"=c("Agosto", "ag."),
-                       "09"=c("Septiembre", "sep."),
-                       "10"=c("Octubre", "oct."),
-                       "11"=c("Noviembre", "nov."),
-                      "12"=c("Diciembre","dic.")
+    bag_months <- list( "01" = c("Enero", "ene."),
+                       "02" = c("Febrero", "feb."),
+                       "03" = c("Marzo", "mar."),
+                       "04" = c("Abril", "abr."),
+                       "05" = c("Mayo", "may."),
+                       "06" = c("Junio", "jun."),
+                       "07" = c("Julio", "jul."),
+                       "08" = c("Agosto", "ag."),
+                       "09" = c("Septiembre", "sep."),
+                       "10" = c("Octubre", "oct."),
+                       "11" = c("Noviembre", "nov."),
+                      "12"  = c("Diciembre","dic.")
                       )
     ## bolsa de meses
     off_months <- unlist(bag_months)
@@ -156,38 +156,40 @@ transform.date <- function(date, dates = date_base){
 ## Código que identifica, revisa y corrige entidades
 ####################################################
 ####################################################
-entities <- list("01"="Aguascalientes",
-                        "02"="Baja California",
-                        "03"="Baja California Sur",
-                        "04"="Campeche",
-                        "05"=c("Coahuila de Zaragoza","Coahuila"),
-                        "06"="Colima",
-                        "07"="Chiapas",
-                        "08"="Chihuahua",
-                        "09"="Distrito Federal",
-                        "10"="Durango",
-                        "11"="Guanajuato",
-                        "12"="Guerrero",
-                        "13"="Hidalgo",
-                        "14"="Jalisco",
-                        "15"="México",
-                        "16"=c("Michoacán de Ocampo", "Michoacán"),
-                        "17"="Morelos",
-                        "18"="Nayarit",
-                        "19"="Nuevo León",
-                        "20"="Oaxaca",
-                        "21"="Puebla",
-                        "22"="Querétaro",
-                        "23"="Quintana Roo",
-                        "24"="San Luis Potosí",
-                        "25"="Sinaloa",
-                        "26"="Sonora",
-                        "27"="Tabasco",
-                        "28"="Tamaulipas",
-                        "29"="Tlaxcala",
-                        "30"=c("Veracruz de Ignacio de la Llave","Veracruz"),
-                        "31"="Yucatán",
-                        "32"="Zacatecas")
+entities <- list(
+    "01" = "Aguascalientes",
+    "02" = "Baja California",
+    "03" = "Baja California Sur",
+    "04" = "Campeche",
+    "05" = c("Coahuila de Zaragoza","Coahuila"),
+    "06" = "Colima",
+    "07" = "Chiapas",
+    "08" = "Chihuahua",
+    "09" = "Distrito Federal",
+    "10" = "Durango",
+    "11" = "Guanajuato",
+    "12" = "Guerrero",
+    "13" = "Hidalgo",
+    "14" = "Jalisco",
+    "15" = "México",
+    "16" = c("Michoacán de Ocampo", "Michoacán"),
+    "17" = "Morelos",
+    "18" = "Nayarit",
+    "19" = "Nuevo León",
+    "20" = "Oaxaca",
+    "21" = "Puebla",
+    "22" = "Querétaro",
+    "23" = "Quintana Roo",
+    "24" = "San Luis Potosí",
+    "25" = "Sinaloa",
+    "26" = "Sonora",
+    "27" = "Tabasco",
+    "28" = "Tamaulipas",
+    "29" = "Tlaxcala",
+    "30" = c("Veracruz de Ignacio de la Llave","Veracruz"),
+    "31" = "Yucatán",
+    "32" = "Zacatecas"
+)
 
 ###################################################
 ##---------------------------------
@@ -202,9 +204,9 @@ transform.entity <- function(entity, bag_entities = entities){
     ## OUT
     ## variable booleana que identifica a las columnas que sobrepasan thresh.
     ## bolsa de entidades
-    off_entities <- unlist(bag_entities)
+    off_entities <- tolower(unlist(bag_entities))
     ## Obtener la entidad que se parece más
-    most_like <- most_simil_mult(entity, off_entities)$char
+    most_like <- most_simil_mult(tolower(entity), off_entities)$char
     ## Obtener índice
     clave <- names(bag_entities)[laply(bag_entities, function(t){ t <- most_like %in% t})]
     list("clave" = clave, "Entidad" = bag_entities[clave][[1]][1])
