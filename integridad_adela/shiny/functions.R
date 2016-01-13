@@ -41,22 +41,22 @@ most_simil <- function(char1, char2){
     ## LCS: subcadena de caracteres más larga en común
     max_str_length <- max(str_length(char1), str_length(char2))
     max_unique_length <- max(
-        length(unique(str_split(char1,"")[[1]])),
-        length(unique(str_split(char2,"")[[1]]))
+        length(unique(str_split(char1, "")[[1]])),
+        length(unique(str_split(char2, "")[[1]]))
     )
     ## Elección de una q razonable: en fechas 3
     ## PENDIENTE
     ## hagamos que todas las métricas estén entre 0,1
     res <-     list(
-        osa       = 1 - stringdist(char1, char2, method = "osa")/max_str_length,
-        lv        = 1 - stringdist(char1, char2, method = "lv")/max_str_length,
-        dl        = 1 - stringdist(char1, char2, method = "dl")/max_str_length,
-        lcs       = 1 - stringdist(char1, char2, method = "lcs")/max_str_length,
+        osa       = 1 - stringdist(char1, char2, method = "osa") / max_str_length,
+        lv        = 1 - stringdist(char1, char2, method = "lv")  / max_str_length,
+        dl        = 1 - stringdist(char1, char2, method = "dl")  / max_str_length,
+        lcs       = 1 - stringdist(char1, char2, method = "lcs") / max_str_length,
         ## Es necesario usar el máximo con 0
         ## ya que cuando alguna de las cadenas es
         ## vacía, se va a -Inf.
-        cosine    = max(1 - stringdist(char1, char2, method = "cosine",q = 3),0),
-        jaccard   = max(1 - stringdist(char1, char2, method = "jaccard",q = 3),0)
+        cosine    = max(1 - stringdist(char1, char2, method = "cosine", q = 3),0),
+        jaccard   = max(1 - stringdist(char1, char2, method = "jaccard", q = 3),0)
     )
     max(unlist(res))
 }
@@ -128,14 +128,14 @@ transform_month <- function(month){
 date_pre_proc <- function(date){
     if(str_detect(date,"([a-z]|[A-Z])")){
         month <- transform_month(date)$Mes
-        date <- str_replace(date,"([a-z]|[A-Z])",month)
-        date <- str_replace_all(date,"([a-z]|[A-Z])","")
+        date  <- str_replace(date, "([a-z]|[A-Z])", month)
+        date  <- str_replace_all(date, "([a-z]|[A-Z])", "")
     }
-    date <- str_split(date,"([[:punct:]]|[[:space:]])")[[1]]
+    date <- str_split(date, "([[:punct:]]|[[:space:]])")[[1]]
     date <- date[order(date, str_length(date), decreasing = TRUE)]
-    date <- date[str_length(date)>0]
+    date <- date[str_length(date) > 0]
     list("date1" = paste0(date,collapse = "-"),
-         "date2" = paste0(date[c(1,3,2)],collapse = "-"))
+         "date2" = paste0(date[c(1, 3, 2)], collapse = "-"))
 }
 
 ###################################################
@@ -145,8 +145,8 @@ date_pre_proc <- function(date){
 ###################################################
 transform.date <- function(date, dates = date_base){
     date <- date_pre_proc(date)
-    list("date1" = head(most_simil_mult(date$date1, dates)$char,1),
-         "date2" = head(most_simil_mult(date$date2, dates)$char,1)
+    list("date1" = head(most_simil_mult(date$date1, dates)$char, 1),
+         "date2" = head(most_simil_mult(date$date2, dates)$char, 1)
          )
 }
 
@@ -230,5 +230,5 @@ add.entity <- function(key, string, bag_entities){
 ##---------------------------------
 ###################################################
 transform.entity.col <- function(col){
-    ldply(col,transform.entity)[,1]
+    ldply(col, transform.entity)[, 1]
 }
